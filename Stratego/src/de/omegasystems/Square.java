@@ -1,4 +1,4 @@
-package com.omegasystems.de;
+package de.omegasystems;
 
 public class Square {
 	public static int from(String str) {

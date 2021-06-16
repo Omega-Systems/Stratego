@@ -1,4 +1,4 @@
-package com.omegasystems.de;
+package de.omegasystems;
 
 public class Board {
 	private Color curColor = Color.startingColor;

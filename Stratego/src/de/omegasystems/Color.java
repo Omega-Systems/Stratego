@@ -1,4 +1,4 @@
-package com.omegasystems.de;
+package de.omegasystems;
 
 public enum Color {
 	RED,

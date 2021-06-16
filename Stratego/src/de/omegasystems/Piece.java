@@ -1,4 +1,4 @@
-package com.omegasystems.de;
+package de.omegasystems;
 
 public class Piece {
 	public static final int NONE	= 0;

@@ -1,4 +1,4 @@
-package com.omegasystems.de;
+package de.omegasystems;
 
 public class BoardSetup {
 	public static Board getTestSetup() {

@@ -1,4 +1,4 @@
-package com.omegasystems.de;
+package de.omegasystems;
 
 public class StrategoMain {
 	public static void main(String[] args) {
