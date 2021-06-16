@@ -14,7 +14,11 @@ public class Square {
 		return file + rank * 10;
 	}
 	
+	public static int from(int rank, int file) {
+		return file + rank * 10;
+	}
+	
 	public static String toString(int sq) {
-		return "";
+		return "TO BE IMPLEMENTED";
 	}
 }
