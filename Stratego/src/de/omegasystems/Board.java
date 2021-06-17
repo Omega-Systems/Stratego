@@ -72,6 +72,18 @@ public class Board {
 		int myPiece = myPieces[Move.getFrom(move)];
 		int enemyPiece = enemyPieces[Move.getTo(move)];
 		
+		if (myPiece == Piece.SPY && enemyPiece == Piece.RANK1) {
+			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
+			enemyPieces[Move.getTo(move)] = Piece.NONE;
+			myPieces[Move.getFrom(move)] = Piece.NONE;
+		}
+		
+		if (myPiece == Piece.RANK8 && enemyPiece == Piece.BOMB) {
+			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
+			enemyPieces[Move.getTo(move)] = Piece.NONE;
+			myPieces[Move.getFrom(move)] = Piece.NONE;
+		}
+		
 		if (myPiece == enemyPiece) { // Both pieces are the same
 			enemyPieces[Move.getTo(move)] = Piece.NONE;
 			myPieces[Move.getFrom(move)] = Piece.NONE;
