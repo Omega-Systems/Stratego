@@ -16,9 +16,9 @@ public class Board {
 	@Override
 	public String toString() {
 		String str =
-				"=".repeat(22) + "\n" +
+				new String(new char[22]).replace("\0", "=") + "\n" +
 				String.format("Move %-6s Turn %s", curColor.toString(), moveCount) + "\n" + 
-				"-".repeat(22) + "\n";
+				new String(new char[22]).replace("\0", "-") + "\n";
 		for (int y = 9; y >= 0; y--) {
 			str += (char) (y + '0') + " ";
 			for (int x = 0; x < 10; x++) {
@@ -34,7 +34,7 @@ public class Board {
 		}
 		str +=
 				"  A B C D E F G H I J " +"\n" +
-				"=".repeat(22);
+				new String(new char[22]).replace("\0", "=");
 		return str;
 	}
 	
