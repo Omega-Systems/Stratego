@@ -3,11 +3,10 @@ package de.omegasystems.gui;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-<<<<<<< HEAD
-=======
 import java.util.HashMap;
 import java.util.Map;
->>>>>>> branch 'master' of https://github.com/Omega-Systems/Stratego.git
+
+//github.com/Omega-Systems/Stratego.git
 
 import javax.imageio.ImageIO;
 
@@ -20,7 +19,6 @@ public class ImageLoader {
 	private static final File WORKING_DIR = new File(System.getProperty("user.dir")+"/");
 	
 	public static BufferedImage getImageForPiece(TileState tileState) {
-<<<<<<< HEAD
 		String path = System.getProperty("user.dir") + "/res/themes/theme_00" +
 				tileState.name().toLowerCase() + ".png";
 		
@@ -30,10 +28,7 @@ public class ImageLoader {
 		} catch (IOException e) {
 			System.out.println("Not found: " + path);
 		};
-		return null;
-=======
 		return map.get(tileState);
->>>>>>> branch 'master' of https://github.com/Omega-Systems/Stratego.git
 	}
 	
 	static {

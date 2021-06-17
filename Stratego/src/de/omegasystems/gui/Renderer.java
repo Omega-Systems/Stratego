@@ -101,22 +101,8 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 			g.fillRect(0, (int) ((((float) height - lineWidth) / 10) * y), width, lineWidth);
 		}
 
-<<<<<<< HEAD
-		g.setColor(Color.cyan);
-		g.fillRect(highlightedField%10*256, highlightedField/10*256, width/10, height/10);
-		
-		g.setColor(new Color(15, 8, 15));
-		for (int x = 0; x < 10; x++) {
-			for (int y = 0; y < 10; y++) {
-				int posX = (int) ((((float) width - lineWidth) / 10) * x);
-				int posY = (int) ((((float) height - lineWidth) / 10) * y);
-				//g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, width/10, height/10, null);
-			}
-		}
-=======
 		Graphics2D g2dComponent = (Graphics2D) xg;
 		g2dComponent.drawImage(bufferedImage, null, 0, 0);
->>>>>>> branch 'master' of https://github.com/Omega-Systems/Stratego.git
 
 	}
 
