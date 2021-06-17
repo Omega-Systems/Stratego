@@ -106,70 +106,72 @@ public class Board {
 		}
 	}
 
-	public List<Integer> generateMoves(int field) {
-		List<Integer> list = new ArrayList<>();
-
-		Color color = redPieces[field]!=Piece.NONE ? Color.RED : Color.BLUE;
+	public List<Integer> generateMoves(int sq) {
+		List<Integer> moves = new ArrayList<Integer>();
 		
 		int[] enemyPieces = this.curColor == Color.RED ? bluePieces : redPieces;
 		int[] myPieces = this.curColor == Color.RED ? redPieces : bluePieces;
-		int piece = myPieces[field];
-		Point p = Square.toPoint(field);
+		int piece = myPieces[sq];
 
-		// Return the empty list if no piece is on the tile
-		if (piece == Piece.NONE)
-			return list;
+		// Return the empty list if no piece or an immovable piece is on the tile
+		if (piece == Piece.NONE || piece == Piece.FLAG || piece == Piece.BOMB) return moves;
 
-		// Generate moves for the 'tower'
+		// Generate moves for the 'scout'
 		if (piece == Piece.RANK9) {
-			for (int x = p.x+1; x < 10; x++) {
-				int neighbour = Square.from(x, p.y);
-				if (myPieces[neighbour] != Piece.NONE)
-					break;
-				list.add(neighbour);
-				if (enemyPieces[neighbour] != Piece.NONE)
-					break;
+			int curSq = sq;
+			while (!Square.isNorthEdge(curSq)) {
+				curSq += Direction.NORTH;
+				if (myPieces[curSq] != Piece.NONE) break;
+				moves.add(curSq);
+				if (enemyPieces[curSq] != Piece.NONE) break;
 			}
-			for (int x = p.x-1; x >= 0; x--) {
-				int neighbour = Square.from(x, p.y);
-				if (myPieces[neighbour] != Piece.NONE)
-					break;
-				list.add(neighbour);
-				if (enemyPieces[neighbour] != Piece.NONE)
-					break;
+			
+			curSq = sq;
+			while (!Square.isEastEdge(curSq)) {
+				curSq += Direction.EAST;
+				if (myPieces[curSq] != Piece.NONE) break;
+				moves.add(curSq);
+				if (enemyPieces[curSq] != Piece.NONE) break;
 			}
-			for (int y = p.y+1; y < 10; y++) {
-				int neighbour = Square.from(p.x, y);
-				if (myPieces[neighbour] != Piece.NONE)
-					break;
-				list.add(neighbour);
-				if (enemyPieces[neighbour] != Piece.NONE)
-					break;
+			
+			curSq = sq;
+			while (!Square.isSouthEdge(curSq)) {
+				curSq += Direction.SOUTH;
+				if (myPieces[curSq] != Piece.NONE) break;
+				moves.add(curSq);
+				if (enemyPieces[curSq] != Piece.NONE) break;
 			}
-			for (int y = p.y-1; y >= 0; y--) {
-				int neighbour = Square.from(p.x, y);
-				if (myPieces[neighbour] != Piece.NONE)
-					break;
-				list.add(neighbour);
-				if (enemyPieces[neighbour] != Piece.NONE)
-					break;
+			
+			curSq = sq;
+			while (!Square.isWestEdge(curSq)) {
+				curSq += Direction.WEST;
+				if (myPieces[curSq] != Piece.NONE) break;
+				moves.add(curSq);
+				if (enemyPieces[curSq] != Piece.NONE) break;
 			}
-		} else if (piece != Piece.FLAG && piece != Piece.BOMB) {
-			int neighbour = Square.from(p.x-1, p.y);
-			if(neighbour<100 && neighbour>=0 && myPieces[neighbour]==Piece.NONE) 
-				list.add(neighbour);
-			neighbour = Square.from(p.x+1, p.y);
-			if(neighbour<100 && neighbour>=0 && myPieces[neighbour]==Piece.NONE) 
-				list.add(neighbour);
-			neighbour = Square.from(p.x, p.y-1);
-			if(neighbour<100 && neighbour>=0 && myPieces[neighbour]==Piece.NONE) 
-				list.add(neighbour);
-			neighbour = Square.from(p.x, p.y+1);
-			if(neighbour<100 && neighbour>=0 && myPieces[neighbour]==Piece.NONE) 
-				list.add(neighbour);	
+			
+			
+			return moves;
+		}
+			
+		// Generate moves
+		if (!Square.isNorthEdge(sq)) {
+			if (myPieces[sq + Direction.NORTH] == Piece.NONE) moves.add(sq + Direction.NORTH);
+		}
+		
+		if (!Square.isEastEdge(sq)) {
+			if (myPieces[sq + Direction.EAST] == Piece.NONE) moves.add(sq + Direction.EAST);
+		}
+		
+		if (!Square.isSouthEdge(sq)) {
+			if (myPieces[sq + Direction.SOUTH] == Piece.NONE) moves.add(sq + Direction.SOUTH);
+		}
+		
+		if (!Square.isWestEdge(sq)) {
+			if (myPieces[sq + Direction.WEST] == Piece.NONE) moves.add(sq + Direction.WEST);
 		}
 
-		return list;
+		return moves;
 	}
 	
 }
