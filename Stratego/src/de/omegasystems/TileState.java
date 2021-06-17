@@ -36,6 +36,7 @@ public enum TileState {
 	static {
 		
 		RED_PIECES = new TileState[]{
+				EMPTY,
 				RED_FLAG,
 				RED_SPY,
 				RED_RANK9,
@@ -52,6 +53,7 @@ public enum TileState {
 		
 		
 		BLUE_PIECES = new TileState[]{
+				EMPTY,
 				BLUE_FLAG,
 				BLUE_SPY,
 				BLUE_RANK9,

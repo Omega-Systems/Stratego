@@ -13,12 +13,15 @@ import javax.swing.JFrame;
 
 import de.omegasystems.Board;
 import de.omegasystems.BoardSetup;
+import de.omegasystems.Move;
+import de.omegasystems.Piece;
 import de.omegasystems.Square;
+import de.omegasystems.TileState;
 
 public class Renderer extends JFrame implements KeyListener, MouseListener {
 
 	/**
-	 * One Sqaure equals 256 pixels
+	 * One Square equals 256 pixels
 	 */
 	private static final long serialVersionUID = 3150993161852184366L;
 
@@ -27,10 +30,14 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 	final int lineWidth = 5;
 
 	int highlightedField = -1;
-	
+
 	public static void main(String[] args) {
 		Board board = BoardSetup.getTestSetup();
 		Renderer renderer = new Renderer("Debug", 1000, 1000, board);
+		board.setPiece(de.omegasystems.Color.BLUE, Piece.RANK9, 8);
+		board.setPiece(de.omegasystems.Color.RED, Piece.RANK9, 43);
+		board.setPiece(de.omegasystems.Color.BLUE, Piece.RANK1, 2);
+		board.setPiece(de.omegasystems.Color.RED, Piece.RANK1, 73);
 		renderer.repaint();
 	}
 
@@ -45,40 +52,46 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 		setResizable(true);
 		addKeyListener(this);
 		addMouseListener(this);
-		
+
 		setVisible(true);
 		setLocationRelativeTo(null);
 	}
 
 	@Override
 	public void paint(Graphics xg) {
-	    //GraphicsEnvironment.getLocalGraphicsEnvironment().
-	    
-	    width = getWidth()-16;
-	    height = getHeight()-39;
-	    BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-	    Graphics2D g = bufferedImage.createGraphics();
-	    
-	    xg.translate(8, 31);
-	    
+		// GraphicsEnvironment.getLocalGraphicsEnvironment().
+
+		width = getWidth() - 16;
+		height = getHeight() - 39;
+		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g = bufferedImage.createGraphics();
+
+		xg.translate(8, 31);
+
 		g.setColor(Color.GRAY);
 		g.fillRect(0, 0, width, height);
 
 		g.setColor(Color.cyan);
-		g.fillRect(highlightedField%10*256, highlightedField/10*256, width/10, height/10);
-		
+		g.fillRect(highlightedField % 10 * 256, highlightedField / 10 * 256, width / 10, height / 10);
+
 		g.setColor(new Color(15, 8, 15));
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
 				int posX = (int) ((((float) width - lineWidth) / 10) * x);
 				int posY = (int) ((((float) height - lineWidth) / 10) * y);
-				g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, width/10, height/10, null);
+				g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, width / 10,
+						height / 10, null);
 			}
 		}
-		//overlay highlighted Tile
-		if(highlightedField>=0)
+		// overlay highlighted Tile
+		if (highlightedField >= 0) {
 			drawTileOverlay(g, new Color(0.0f, 0.0f, 1.0f, 0.2f), highlightedField);
-		
+			Color color = new Color(0.0f, 1.0f, 1.0f, 0.2f);
+			for (Integer move : board.generateMoves(highlightedField)) {
+				drawTileOverlay(g, color, move);
+			}
+		}
+
 		g.setColor(new Color(15, 8, 15));
 
 		for (int x = 0; x < 11; x++) {
@@ -87,30 +100,30 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 		for (int y = 0; y < 11; y++) {
 			g.fillRect(0, (int) ((((float) height - lineWidth) / 10) * y), width, lineWidth);
 		}
-		
-	    Graphics2D g2dComponent = (Graphics2D) xg;
-	    g2dComponent.drawImage(bufferedImage, null, 0, 0);  
-		
+
+		Graphics2D g2dComponent = (Graphics2D) xg;
+		g2dComponent.drawImage(bufferedImage, null, 0, 0);
+
 	}
-	
+
 	void drawTileOverlay(Graphics2D g, Color color, int pos) {
 		g.setColor(color);
-		g.fillRect((highlightedField%10)*(width/10), (highlightedField/10)*(height/10), (int) (width/10.0f), (int) (height/10.0f));
+		g.fillRect((pos % 10) * (width / 10), (pos / 10) * (height / 10), (int) (width / 10.0f),
+				(int) (height / 10.0f));
 	}
 
 	int getFieldFromPos(int x, int y) {
-		int fieldX = (int) ((((float)x)-8f)/width*10);
-		int fieldY = (int) ((((float)y)-31f)/height*10);
-		
+		int fieldX = (int) ((((float) x) - 8f) / width * 10);
+		int fieldY = (int) ((((float) y) - 31f) / height * 10);
+
 		return fieldX + fieldY * 10;
 	}
-	
-
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_ESCAPE:
+			// We're sooo funny haha
 			System.exit(69);
 			break;
 
@@ -121,12 +134,12 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
+
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+
 	}
 
 	@Override
@@ -136,27 +149,35 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		int newField = getFieldFromPos(e.getX(), e.getY());
-		if(highlightedField!=newField)
-			highlightedField = newField;
-		else
+		if (newField == highlightedField)
 			highlightedField = -1;
+		else if (highlightedField >= 0 && board.getTileState(highlightedField) != TileState.EMPTY) {
+			if (board.generateMoves(highlightedField).contains(newField)) {
+				board.move(Move.from(highlightedField, newField));
+				highlightedField = -1;
+			} else {
+				highlightedField = newField;
+			}
+		} else {
+			highlightedField = newField;
+		}
 		repaint();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+
 	}
-	
+
 }
