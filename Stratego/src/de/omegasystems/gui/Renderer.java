@@ -12,9 +12,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 
 import javax.swing.JFrame;
-
-import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
-
 import de.omegasystems.Board;
 import de.omegasystems.Square;
 import de.omegasystems.TileState;

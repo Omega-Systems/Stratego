@@ -6,7 +6,8 @@ import de.omegasystems.TileState;
 
 public class ImageLoader {
 
-	public static BufferedImage	EMPTY,
+	public static BufferedImage
+	EMPTY,
 	LAKE,
 	RED_UNKNOWN,
 	BLUE_UNKNOWN,
@@ -36,30 +37,7 @@ public class ImageLoader {
 	BLUE_BOMB;
 	
 	public static BufferedImage getImageForPiece(TileState tileState) {
-		switch (tileState) {
-		case EMPTY: return EMPTY;
-		case LAKE: return LAKE;
-		case RED_UNKNOWN: return RED_UNKNOWN;
-		case BLUE_UNKNOWN: return BLUE_UNKNOWN;
-		case RED_FLAG: return RED_FLAG;
-		case RED_SPY: return RED_SPY;
-		case RED_RANK9: return RED_RANK9;
-		case RED_RANK8: return RED_RANK8;
-		case RED_RANK7: return RED_RANK7;
-		case RED_RANK6: return RED_RANK6;
-		case RED_RANK5: return RED_RANK5;
-		case RED_RANK4: return RED_RANK4;
-		case RED_RANK3: return RED_RANK3;
-		case RED_RANK2: return RED_RANK2;
-		case RED_RANK1: return RED_RANK1;
-		case RED_RANK8: return RED_RANK8;
-		case BLUE_BOMB: return BLUE_BOMB;
-		
-			break;
-
-		default:
-			break;
-		}
+		return null;
 	}
 	
 	static {

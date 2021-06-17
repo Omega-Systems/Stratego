@@ -62,15 +62,16 @@ public class Board {
 		int[] myPieces = this.curColor == Color.RED ? redPieces : bluePieces;
 		int[] enemyPieces = this.curColor == Color.RED ? bluePieces : redPieces;
 		
-		if (enemyPieces[Move.getTo(move)] == Piece.FLAG) {
-			state = curColor == Color.RED ? BoardState.VICTORY_RED : BoardState.VICTORY_BLUE;
-		}
 		if (moveCount == 1024) {
 			state = BoardState.DRAW;
 		}
 		
 		int myPiece = myPieces[Move.getFrom(move)];
 		int enemyPiece = enemyPieces[Move.getTo(move)];
+		
+		if (enemyPiece == Piece.FLAG) {
+			state = curColor == Color.RED ? BoardState.VICTORY_RED : BoardState.VICTORY_BLUE;
+		
 		
 		if (myPiece == Piece.SPY && enemyPiece == Piece.RANK1) {
 			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
