@@ -80,7 +80,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 			for (int y = 0; y < 10; y++) {
 				int posX = (int) ((((float) width - lineWidth) / 10) * x);
 				int posY = (int) ((((float) height - lineWidth) / 10) * y);
-				//g.drawImage(getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, width/10, height/10, null);
+				//g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, width/10, height/10, null);
 			}
 		}
 

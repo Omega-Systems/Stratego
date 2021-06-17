@@ -71,7 +71,7 @@ public class Board {
 		
 		if (enemyPiece == Piece.FLAG) {
 			state = curColor == Color.RED ? BoardState.VICTORY_RED : BoardState.VICTORY_BLUE;
-		
+		}
 		
 		if (myPiece == Piece.SPY && enemyPiece == Piece.RANK1) {
 			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];

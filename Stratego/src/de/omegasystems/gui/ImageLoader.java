@@ -1,6 +1,10 @@
 package de.omegasystems.gui;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import de.omegasystems.TileState;
 
@@ -37,6 +41,15 @@ public class ImageLoader {
 	BLUE_BOMB;
 	
 	public static BufferedImage getImageForPiece(TileState tileState) {
+		String path = System.getProperty("user.dir") + "/res/themes/theme_00" +
+				tileState.name().toLowerCase() + ".png";
+		
+		try {
+			System.out.println("Load image!");
+			return ImageIO.read(new File(path));
+		} catch (IOException e) {
+			System.out.println("Not found: " + path);
+		};
 		return null;
 	}
 	
