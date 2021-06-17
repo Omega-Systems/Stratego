@@ -38,6 +38,16 @@ public class Board {
 		return str;
 	}
 	
+	public TileState getTileState(int pos) {
+		
+		
+		if (redPieces[pos] == Piece.NONE && bluePieces[pos]== Piece.NONE) {
+			return TileState.EMPTY;
+		}
+		
+		return TileState.RED_FLAG;
+	}
+	
 	public int getPiece(Color color, int pos) {
 		int[] myPieces = color == Color.RED ? redPieces : bluePieces;
 		return myPieces[pos];
@@ -59,8 +69,22 @@ public class Board {
 			state = BoardState.DRAW;
 		}
 		
-		myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
-		enemyPieces[Move.getTo(move)] = Piece.NONE;
-		myPieces[Move.getFrom(move)] = Piece.NONE;
+		int myPiece = myPieces[Move.getFrom(move)];
+		int enemyPiece = enemyPieces[Move.getTo(move)];
+		
+		if (myPiece == enemyPiece) { // Both pieces are the same
+			enemyPieces[Move.getTo(move)] = Piece.NONE;
+			myPieces[Move.getFrom(move)] = Piece.NONE;
+		}
+		
+		if (myPiece > enemyPiece) { // My piece is stronger
+			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
+			enemyPieces[Move.getTo(move)] = Piece.NONE;
+			myPieces[Move.getFrom(move)] = Piece.NONE;
+		}
+		
+		if (myPiece < enemyPiece) { // Enemy piece is stronger
+			myPieces[Move.getFrom(move)] = Piece.NONE;
+		}
 	}
 }
