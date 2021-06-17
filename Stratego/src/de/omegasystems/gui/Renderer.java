@@ -3,15 +3,21 @@ package de.omegasystems.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 
 import javax.swing.JFrame;
 
+import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
+
 import de.omegasystems.Board;
+import de.omegasystems.Square;
+import de.omegasystems.TileState;
 
 public class Renderer extends JFrame implements KeyListener, MouseListener {
 
@@ -77,7 +83,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 			for (int y = 0; y < 10; y++) {
 				int posX = (int) ((((float) width - lineWidth) / 10) * x);
 				int posY = (int) ((((float) height - lineWidth) / 10) * y);
-				g.drawImage(getImageForPiece(0), null, posX, posY);
+				//g.drawImage(getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, width/10, height/10, null);
 			}
 		}
 
@@ -94,15 +100,13 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 		return fieldX + fieldY * 10;
 	}
 	
-	BufferedImage getImageForPiece(int piece) {
-		return null;
-	}
+
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_ESCAPE:
-			System.exit(0);
+			System.exit(69);
 			break;
 
 		default:
