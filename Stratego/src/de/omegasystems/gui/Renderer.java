@@ -3,6 +3,7 @@ package de.omegasystems.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -40,11 +41,9 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 		this.width = width;
 		this.height = height;
 
-		setUndecorated(true);
+		setUndecorated(false);
 		setSize(width, height);
-		setResizable(false);
-		setBackground(Color.LIGHT_GRAY);
-		setForeground(Color.LIGHT_GRAY);
+		setResizable(true);
 		addKeyListener(this);
 		addMouseListener(this);
 		
@@ -54,9 +53,15 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 
 	@Override
 	public void paint(Graphics xg) {
-		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+	    //GraphicsEnvironment.getLocalGraphicsEnvironment().
+	    
+	    width = getWidth()-16;
+	    height = getHeight()-39;
+	    BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 	    Graphics2D g = bufferedImage.createGraphics();
-
+	    
+	    xg.translate(8, 31);
+	    
 		g.setColor(Color.GRAY);
 		g.fillRect(0, 0, width, height);
 
