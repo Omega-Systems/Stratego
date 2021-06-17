@@ -1,5 +1,7 @@
 package de.omegasystems;
 
+import java.awt.Point;
+
 public class Square {
 	public static int from(String str) {
 		if (str.length() != 2) {
@@ -20,5 +22,11 @@ public class Square {
 	
 	public static String toString(int sq) {
 		return "TO BE IMPLEMENTED";
+	}
+	
+	public static Point toPoint(int pos) {
+		int posX = pos%10;
+		int posY = pos/10;
+		return new Point(posX, posY);
 	}
 }
