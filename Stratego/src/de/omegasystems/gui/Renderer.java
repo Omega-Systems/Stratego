@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
@@ -18,7 +19,7 @@ import de.omegasystems.Piece;
 import de.omegasystems.Square;
 import de.omegasystems.TileState;
 
-public class Renderer extends JFrame implements KeyListener, MouseListener {
+public class Renderer extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
 
 	/**
 	 * One Square equals 256 pixels
@@ -29,7 +30,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 	int width, height;
 	final int lineWidth = 5;
 
-	int highlightedField = -1;
+	int highlightedField, targetField = -1;
 
 	public static void main(String[] args) {
 		Board board = BoardSetup.getTestSetup();
@@ -50,8 +51,10 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 		setUndecorated(false);
 		setSize(width, height);
 		setResizable(true);
+
 		addKeyListener(this);
 		addMouseListener(this);
+		addMouseMotionListener(this);
 
 		setVisible(true);
 		setLocationRelativeTo(null);
@@ -86,11 +89,13 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 		// overlay highlighted Tile
 		if (highlightedField >= 0) {
 			drawTileOverlay(g, new Color(0.0f, 0.0f, 1.0f, 0.2f), highlightedField);
-			Color color = new Color(0.0f, 1.0f, 1.0f, 0.2f);
+			Color color = new Color(0.0f, 1f, 1f, 0.2f);
 			for (Integer move : board.generateMoves(highlightedField)) {
 				drawTileOverlay(g, color, move);
 			}
 		}
+		if (targetField >= 0)
+			drawTileOverlay(g, new Color(1f, 0f, 0f, 0.2f), targetField);
 
 		g.setColor(new Color(15, 8, 15));
 
@@ -177,6 +182,31 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		if (highlightedField >= 0 && targetField >= 0 && board.generateMoves(highlightedField).contains(targetField)) {
+			board.move(Move.from(highlightedField, targetField));
+			highlightedField = -1;
+			targetField = -1;
+			repaint();
+		}
+		if(targetField>=0) {
+			if(targetField==highlightedField) 
+				highlightedField = -1;
+			targetField = -1;
+			repaint();
+		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		int newField = getFieldFromPos(e.getX(), e.getY());
+		if (targetField != newField) {
+			targetField = newField;
+			repaint();
+		}
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
 
 	}
 

@@ -19,11 +19,10 @@ public class ImageLoader {
 	private static final File WORKING_DIR = new File(System.getProperty("user.dir")+"/");
 	
 	public static BufferedImage getImageForPiece(TileState tileState) {
-		String path = System.getProperty("user.dir") + "/res/themes/theme_00" +
+		String path = System.getProperty("user.dir") + "/Stratego/res/themes/theme_00/" +
 				tileState.name().toLowerCase() + ".png";
 		
 		try {
-			System.out.println("Load image!");
 			return ImageIO.read(new File(path));
 		} catch (IOException e) {
 			System.out.println("Not found: " + path);
