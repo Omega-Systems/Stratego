@@ -128,7 +128,6 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		
-		
 	}
 
 	@Override
