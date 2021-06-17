@@ -8,14 +8,14 @@ public class Square {
 		
 		str = str.toLowerCase();
 		
-		int file = str.charAt(0) - 'a';
-		int rank = str.charAt(1) - '0';
+		int x = str.charAt(0) - 'a';
+		int y = str.charAt(1) - '0';
 		
-		return file + rank * 10;
+		return x + y * 10;
 	}
 	
-	public static int from(int rank, int file) {
-		return file + rank * 10;
+	public static int from(int x, int y) {
+		return x + y * 10;
 	}
 	
 	public static String toString(int sq) {
