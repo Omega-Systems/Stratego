@@ -3,7 +3,6 @@ package de.omegasystems.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -27,7 +26,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 	int width, height;
 	final int lineWidth = 5;
 
-	int highlightedField;
+	int highlightedField = -1;
 	
 	public static void main(String[] args) {
 		Board board = BoardSetup.getTestSetup();
@@ -76,7 +75,10 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 				g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, width/10, height/10, null);
 			}
 		}
-
+		//overlay highlighted Tile
+		if(highlightedField>=0)
+			drawTileOverlay(g, new Color(0.0f, 0.0f, 1.0f, 0.2f), highlightedField);
+		
 		g.setColor(new Color(15, 8, 15));
 
 		for (int x = 0; x < 11; x++) {
@@ -90,14 +92,15 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 	    g2dComponent.drawImage(bufferedImage, null, 0, 0);  
 		
 	}
+	
+	void drawTileOverlay(Graphics2D g, Color color, int pos) {
+		g.setColor(color);
+		g.fillRect((highlightedField%10)*(width/10), (highlightedField/10)*(height/10), (int) (width/10.0f), (int) (height/10.0f));
+	}
 
 	int getFieldFromPos(int x, int y) {
-		float relX = width-lineWidth/10f;
-		int fieldX = (int) (x/relX);
-		float relY = width-lineWidth/10f;
-		int fieldY = (int) (y/relY);
-		
-		System.out.println("X: "+fieldX+"; Y: "+fieldY);
+		int fieldX = (int) ((((float)x)-8f)/width*10);
+		int fieldY = (int) ((((float)y)-31f)/height*10);
 		
 		return fieldX + fieldY * 10;
 	}
@@ -128,7 +131,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		highlightedField = getFieldFromPos(e.getX(), e.getY());
+
 	}
 
 	@Override
@@ -143,7 +146,12 @@ public class Renderer extends JFrame implements KeyListener, MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+		int newField = getFieldFromPos(e.getX(), e.getY());
+		if(highlightedField!=newField)
+			highlightedField = newField;
+		else
+			highlightedField = -1;
+		repaint();
 	}
 
 	@Override
