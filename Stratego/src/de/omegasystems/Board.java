@@ -39,17 +39,15 @@ public class Board {
 		return str;
 	}
 
-	public TileState getTileState(int pos) {
-
-		if(redPieces[pos]!=Piece.NONE) return TileState.RED_PIECES[redPieces[pos]];
-		else if(bluePieces[pos]!=Piece.NONE) return TileState.BLUE_PIECES[bluePieces[pos]];
-		else return TileState.EMPTY;
+	public TileState getTileState(int sq) {
+		if (Square.isLake(sq)) return TileState.LAKE;
 		
-//		if (redPieces[pos] == Piece.NONE && bluePieces[pos] == Piece.NONE) {
-//			return TileState.EMPTY;
-//		}
-//
-//		return TileState.RED_FLAG;
+		int redPiece = redPieces[sq];
+		int bluePiece = bluePieces[sq];
+		
+		if (redPiece != Piece.NONE) return TileState.RED_PIECES[redPiece];
+		if (bluePiece != Piece.NONE) return TileState.BLUE_PIECES[bluePiece];
+		return TileState.EMPTY;
 	}
 
 	public int getPiece(Color color, int pos) {
@@ -121,7 +119,7 @@ public class Board {
 			int curSq = sq;
 			while (!Square.isNorthEdge(curSq)) {
 				curSq += Direction.NORTH;
-				if (myPieces[curSq] != Piece.NONE) break;
+				if (myPieces[curSq] != Piece.NONE || Square.isLake(curSq)) break;
 				moves.add(curSq);
 				if (enemyPieces[curSq] != Piece.NONE) break;
 			}
@@ -129,7 +127,7 @@ public class Board {
 			curSq = sq;
 			while (!Square.isEastEdge(curSq)) {
 				curSq += Direction.EAST;
-				if (myPieces[curSq] != Piece.NONE) break;
+				if (myPieces[curSq] != Piece.NONE || Square.isLake(curSq)) break;
 				moves.add(curSq);
 				if (enemyPieces[curSq] != Piece.NONE) break;
 			}
@@ -137,7 +135,7 @@ public class Board {
 			curSq = sq;
 			while (!Square.isSouthEdge(curSq)) {
 				curSq += Direction.SOUTH;
-				if (myPieces[curSq] != Piece.NONE) break;
+				if (myPieces[curSq] != Piece.NONE || Square.isLake(curSq)) break;
 				moves.add(curSq);
 				if (enemyPieces[curSq] != Piece.NONE) break;
 			}
@@ -145,7 +143,7 @@ public class Board {
 			curSq = sq;
 			while (!Square.isWestEdge(curSq)) {
 				curSq += Direction.WEST;
-				if (myPieces[curSq] != Piece.NONE) break;
+				if (myPieces[curSq] != Piece.NONE || Square.isLake(curSq)) break;
 				moves.add(curSq);
 				if (enemyPieces[curSq] != Piece.NONE) break;
 			}
@@ -155,19 +153,19 @@ public class Board {
 		}
 			
 		// Generate moves
-		if (!Square.isNorthEdge(sq)) {
+		if (!Square.isNorthEdge(sq) && !Square.isLake(sq + Direction.NORTH)) {
 			if (myPieces[sq + Direction.NORTH] == Piece.NONE) moves.add(sq + Direction.NORTH);
 		}
 		
-		if (!Square.isEastEdge(sq)) {
+		if (!Square.isEastEdge(sq) && !Square.isLake(sq + Direction.EAST)) {
 			if (myPieces[sq + Direction.EAST] == Piece.NONE) moves.add(sq + Direction.EAST);
 		}
 		
-		if (!Square.isSouthEdge(sq)) {
+		if (!Square.isSouthEdge(sq) && !Square.isLake(sq + Direction.SOUTH)) {
 			if (myPieces[sq + Direction.SOUTH] == Piece.NONE) moves.add(sq + Direction.SOUTH);
 		}
 		
-		if (!Square.isWestEdge(sq)) {
+		if (!Square.isWestEdge(sq) && !Square.isLake(sq + Direction.WEST)) {
 			if (myPieces[sq + Direction.WEST] == Piece.NONE) moves.add(sq + Direction.WEST);
 		}
 

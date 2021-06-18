@@ -1,8 +1,11 @@
 package de.omegasystems;
 
 import java.awt.Point;
+import java.util.Set;
 
 public class Square {
+	private static final Set<Integer> LAKES = Set.of(42, 43, 46, 47, 52, 53, 56, 57);
+	
 	public static int from(String str) {
 		if (str.length() != 2) {
 			throw new IllegalArgumentException();
@@ -31,10 +34,8 @@ public class Square {
 	}
 	
 	public static boolean isNorthEdge(int sq) { return 90 <= sq && sq < 100; }
-	
 	public static boolean isEastEdge(int sq) { return sq % 10 == 9; }
-	
 	public static boolean isSouthEdge(int sq) { return 0 <= sq && sq < 10; }
-	
 	public static boolean isWestEdge(int sq) { return sq % 10 == 0; }
+	public static boolean isLake(int sq) { return LAKES.contains(sq); }
 }
