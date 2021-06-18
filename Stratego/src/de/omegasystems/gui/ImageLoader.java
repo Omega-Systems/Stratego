@@ -19,14 +19,6 @@ public class ImageLoader {
 	private static final File WORKING_DIR = new File(System.getProperty("user.dir")+"/");
 	
 	public static BufferedImage getImageForPiece(TileState tileState) {
-		String path = System.getProperty("user.dir") + "/Stratego/res/themes/theme_00/" +
-				tileState.name().toLowerCase() + ".png";
-		
-		try {
-			return ImageIO.read(new File(path));
-		} catch (IOException e) {
-			System.out.println("Not found: " + path);
-		};
 		return map.get(tileState);
 	}
 	
@@ -42,7 +34,6 @@ public class ImageLoader {
 	
 	private static BufferedImage loadImage(String name) throws IOException {
 		File imageFile = new File(WORKING_DIR, "/Stratego/res/themes/theme_00/"+name+".png");
-		//System.out.println(imageFile.getAbsolutePath());
 		BufferedImage image = ImageIO.read(imageFile);
 		return image;
 	}

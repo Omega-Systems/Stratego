@@ -71,13 +71,6 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 		xg.translate(8, 31);
 
-		g.setColor(Color.GRAY);
-		g.fillRect(0, 0, width, height);
-
-		g.setColor(Color.cyan);
-		g.fillRect(highlightedField % 10 * 256, highlightedField / 10 * 256, width / 10, height / 10);
-
-		g.setColor(new Color(15, 8, 15));
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
 				int posX = (int) ((((float) width - lineWidth) / 10) * x);
@@ -99,11 +92,13 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 		g.setColor(new Color(15, 8, 15));
 
+		float factor = (((float) width - lineWidth) / 10);
 		for (int x = 0; x < 11; x++) {
-			g.fillRect((int) ((((float) width - lineWidth) / 10) * x), 0, lineWidth, height);
+			g.fillRect((int) (factor * x), 0, lineWidth, height);
 		}
+		factor = (((float) height - lineWidth) / 10);
 		for (int y = 0; y < 11; y++) {
-			g.fillRect(0, (int) ((((float) height - lineWidth) / 10) * y), width, lineWidth);
+			g.fillRect(0, (int) (factor * y), width, lineWidth);
 		}
 
 		Graphics2D g2dComponent = (Graphics2D) xg;
