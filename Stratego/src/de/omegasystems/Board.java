@@ -63,44 +63,31 @@ public class Board {
 		int[] myPieces = this.curColor == Color.RED ? redPieces : bluePieces;
 		int[] enemyPieces = this.curColor == Color.RED ? bluePieces : redPieces;
 
-		if (moveCount == 1024) {
-			state = BoardState.DRAW;
-		}
-
-		curColor = curColor == Color.BLUE ? Color.RED : Color.BLUE;
+		if (moveCount == 1024) state = BoardState.DRAW;
 		
 		int myPiece = myPieces[Move.getFrom(move)];
 		int enemyPiece = enemyPieces[Move.getTo(move)];
 
 		if (enemyPiece == Piece.FLAG)
 			state = curColor == Color.RED ? BoardState.VICTORY_RED : BoardState.VICTORY_BLUE;
-
-		if (myPiece == Piece.SPY && enemyPiece == Piece.RANK1) {
+		
+		int captureResult = 0; // -1: Defender wins; 0: Both die; 1: Attacker wins;
+		
+		if (myPiece == Piece.SPY && enemyPiece == Piece.RANK1) captureResult = 1;
+		else if (myPiece == Piece.RANK8 && enemyPiece == Piece.BOMB) captureResult = 1;
+		else if (myPiece > enemyPiece) captureResult = 1;
+		else if (myPiece == enemyPiece) captureResult = 0;
+		else if (myPiece < enemyPiece) captureResult = -1;
+		
+		
+		if (captureResult == 1)
 			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
+		if (captureResult == 0)
 			enemyPieces[Move.getTo(move)] = Piece.NONE;
-			myPieces[Move.getFrom(move)] = Piece.NONE;
-		}
-
-		if (myPiece == Piece.RANK8 && enemyPiece == Piece.BOMB) {
-			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
-			enemyPieces[Move.getTo(move)] = Piece.NONE;
-			myPieces[Move.getFrom(move)] = Piece.NONE;
-		}
-
-		if (myPiece == enemyPiece) { // Both pieces are the same
-			enemyPieces[Move.getTo(move)] = Piece.NONE;
-			myPieces[Move.getFrom(move)] = Piece.NONE;
-		}
-
-		if (myPiece > enemyPiece) { // My piece is stronger
-			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
-			enemyPieces[Move.getTo(move)] = Piece.NONE;
-			myPieces[Move.getFrom(move)] = Piece.NONE;
-		}
-
-		if (myPiece < enemyPiece) { // Enemy piece is stronger
-			myPieces[Move.getFrom(move)] = Piece.NONE;
-		}
+		myPieces[Move.getFrom(move)] = Piece.NONE;
+		
+		curColor = curColor == Color.BLUE ? Color.RED : Color.BLUE;
+		moveCount++;
 	}
 
 	public List<Integer> generateMoves(int sq) {
