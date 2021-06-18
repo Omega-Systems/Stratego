@@ -5,5 +5,9 @@ public enum BoardState {
 	INGAME,
 	VICTORY_RED,
 	VICTORY_BLUE,
-	DRAW
+	DRAW;
+	
+	public static BoardState getVictory(Color color) {
+		return color == Color.RED ? VICTORY_RED : VICTORY_BLUE;
+	}
 }

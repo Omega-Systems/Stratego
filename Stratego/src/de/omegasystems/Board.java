@@ -67,32 +67,31 @@ public class Board {
 		
 		int myPiece = myPieces[Move.getFrom(move)];
 		int enemyPiece = enemyPieces[Move.getTo(move)];
-
-		if (enemyPiece == Piece.FLAG)
-			state = curColor == Color.RED ? BoardState.VICTORY_RED : BoardState.VICTORY_BLUE;
 		
+		if (enemyPiece == Piece.FLAG) state = BoardState.getVictory(curColor);
+		
+		// Find capture result
 		int captureResult = 0; // -1: Defender wins; 0: Both die; 1: Attacker wins;
-		
 		if (myPiece == Piece.SPY && enemyPiece == Piece.RANK1) captureResult = 1;
 		else if (myPiece == Piece.RANK8 && enemyPiece == Piece.BOMB) captureResult = 1;
 		else if (myPiece > enemyPiece) captureResult = 1;
 		else if (myPiece == enemyPiece) captureResult = 0;
 		else if (myPiece < enemyPiece) captureResult = -1;
 		
-		
-		if (captureResult == 1)
+		// Execute capture
+		if (captureResult == 1) {
 			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
-		if (captureResult == 0)
-			enemyPieces[Move.getTo(move)] = Piece.NONE;
+			enemyPieces[Move.getTo(move)] = 0;
+		} else if (captureResult == 0) enemyPieces[Move.getTo(move)] = Piece.NONE;
 		myPieces[Move.getFrom(move)] = Piece.NONE;
 		
+		// Switch color and increment move counter
 		curColor = curColor == Color.BLUE ? Color.RED : Color.BLUE;
 		moveCount++;
 	}
 
 	public List<Integer> generateMoves(int sq) {
 		List<Integer> moves = new ArrayList<Integer>();
-		
 		int[] enemyPieces = this.curColor == Color.RED ? bluePieces : redPieces;
 		int[] myPieces = this.curColor == Color.RED ? redPieces : bluePieces;
 		int piece = myPieces[sq];
@@ -133,11 +132,9 @@ public class Board {
 				moves.add(curSq);
 				if (enemyPieces[curSq] != Piece.NONE) break;
 			}
-			
-			
 			return moves;
 		}
-			
+		
 		// Generate moves
 		if (!Square.isNorthEdge(sq) && !Square.isLake(sq + Direction.NORTH)) {
 			if (myPieces[sq + Direction.NORTH] == Piece.NONE) moves.add(sq + Direction.NORTH);
@@ -157,5 +154,4 @@ public class Board {
 
 		return moves;
 	}
-	
 }
