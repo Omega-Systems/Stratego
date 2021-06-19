@@ -79,11 +79,11 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = bufferedImage.createGraphics();
 
-		xg.translate(8, 31);
+		xg.translate(8, 32);
 		xg.translate(offsetX, offsetY);
 
-		g.setColor(backgroundColor);
-		g.fillRect(0, 0, boardWidth, boardWidth);
+		xg.setColor(backgroundColor);
+		xg.fillRect(-lineWidth/2, -lineWidth/2, boardWidth, boardWidth);
 		
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
@@ -112,7 +112,6 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 		g.setColor(new Color(15, 8, 15));
 
-		/*
 		float factor = (((float) boardWidth - lineWidth) / 10);
 		for (int x = 0; x < 11; x++) {
 			g.fillRect((int) (factor * x), 0, lineWidth, boardWidth);
@@ -121,11 +120,10 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 		for (int y = 0; y < 11; y++) {
 			g.fillRect(0, (int) (factor * y), boardWidth, lineWidth);
 		}
-		*/
 
 		if (mousePressed && selectedField >= 0)
 			g.drawImage(ImageLoader.getImageForPiece(board.getTileState(selectedField)), mousePos.x - 8 - offsetX - boardWidth / 20,
-					mousePos.y - 31 - offsetY - boardWidth / 20, boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth, null);
+					mousePos.y - 32 - offsetY - boardWidth / 20, boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth, null);
 
 		Graphics2D g2dComponent = (Graphics2D) xg;
 		g2dComponent.drawImage(bufferedImage, null, 0, 0);
@@ -133,8 +131,8 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 	void drawTileOverlay(Graphics2D g, Color color, int pos) {
 		g.setColor(color);
-		g.fillRect((pos % 10) * (boardWidth / 10), (9 - (pos / 10)) * (boardWidth / 10), (int) (boardWidth / 10.0f)-lineWidth,
-				(int) (boardWidth / 10.0f)-lineWidth);
+		int rectWidth = (boardWidth / 10)-lineWidth;
+		g.fillRect((pos % 10) * (boardWidth / 10), (9 - (pos / 10)) * (boardWidth / 10), rectWidth, rectWidth);
 	}
 
 	int getFieldFromPos(int x, int y) {
