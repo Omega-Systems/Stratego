@@ -78,12 +78,18 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 		
 		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = bufferedImage.createGraphics();
-
+		
+		g.setColor(backgroundColor);
+		g.fillRect(0, 0, width, height);
+		
+		
+		xg.setColor(backgroundColor);
+		xg.fillRect(0, 0, width, height);
 		xg.translate(8, 32);
 		xg.translate(offsetX, offsetY);
 
-		xg.setColor(backgroundColor);
-		xg.fillRect(-lineWidth/2, -lineWidth/2, boardWidth, boardWidth);
+		
+		
 		
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
@@ -110,7 +116,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 				}
 		}
 
-		g.setColor(new Color(15, 8, 15));
+		g.setColor(backgroundColor);
 
 		float factor = (((float) boardWidth - lineWidth) / 10);
 		for (int x = 0; x < 11; x++) {
@@ -131,7 +137,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 	void drawTileOverlay(Graphics2D g, Color color, int pos) {
 		g.setColor(color);
-		int rectWidth = (boardWidth / 10)-lineWidth;
+		int rectWidth = (int) (boardWidth / 10.0f)-lineWidth;
 		g.fillRect((pos % 10) * (boardWidth / 10), (9 - (pos / 10)) * (boardWidth / 10), rectWidth, rectWidth);
 	}
 
