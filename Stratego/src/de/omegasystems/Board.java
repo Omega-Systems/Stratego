@@ -65,8 +65,10 @@ public class Board {
 
 		if (moveCount == 1024) state = BoardState.DRAW;
 		
-		int myPiece = myPieces[Move.getFrom(move)];
-		int enemyPiece = enemyPieces[Move.getTo(move)];
+		int fromSq = Move.getFrom(move);
+		int toSq = Move.getTo(move);
+		int myPiece = myPieces[fromSq];
+		int enemyPiece = enemyPieces[toSq];
 		
 		if (enemyPiece == Piece.FLAG) state = BoardState.getVictory(curColor);
 		
@@ -79,11 +81,9 @@ public class Board {
 		else if (myPiece < enemyPiece) captureResult = -1;
 		
 		// Execute capture
-		if (captureResult == 1) {
-			myPieces[Move.getTo(move)] = myPieces[Move.getFrom(move)];
-			enemyPieces[Move.getTo(move)] = 0;
-		} else if (captureResult == 0) enemyPieces[Move.getTo(move)] = Piece.NONE;
-		myPieces[Move.getFrom(move)] = Piece.NONE;
+		myPieces[toSq] = captureResult == 1 ? myPiece : Piece.NONE;
+		enemyPieces[toSq] = captureResult == -1 ? enemyPiece : Piece.NONE;
+		myPieces[enemyPiece] = Piece.NONE;
 		
 		// Switch color and increment move counter
 		curColor = curColor == Color.BLUE ? Color.RED : Color.BLUE;
