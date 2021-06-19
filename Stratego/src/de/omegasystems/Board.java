@@ -136,21 +136,17 @@ public class Board {
 		}
 		
 		// Generate moves
-		if (!Square.isNorthEdge(sq) && !Square.isLake(sq + Direction.NORTH)) {
-			if (myPieces[sq + Direction.NORTH] == Piece.NONE) moves.add(sq + Direction.NORTH);
-		}
+		int newSq = sq + Direction.NORTH;
+		if (!Square.isNorthEdge(sq) && !Square.isLake(newSq) && myPieces[newSq] == Piece.NONE) moves.add(newSq);
 		
-		if (!Square.isEastEdge(sq) && !Square.isLake(sq + Direction.EAST)) {
-			if (myPieces[sq + Direction.EAST] == Piece.NONE) moves.add(sq + Direction.EAST);
-		}
+		newSq = sq + Direction.EAST;
+		if (!Square.isEastEdge(sq) && !Square.isLake(newSq) && myPieces[newSq] == Piece.NONE) moves.add(newSq);
 		
-		if (!Square.isSouthEdge(sq) && !Square.isLake(sq + Direction.SOUTH)) {
-			if (myPieces[sq + Direction.SOUTH] == Piece.NONE) moves.add(sq + Direction.SOUTH);
-		}
+		newSq = sq + Direction.SOUTH;
+		if (!Square.isSouthEdge(sq) && !Square.isLake(newSq) && myPieces[newSq] == Piece.NONE) moves.add(newSq);
 		
-		if (!Square.isWestEdge(sq) && !Square.isLake(sq + Direction.WEST)) {
-			if (myPieces[sq + Direction.WEST] == Piece.NONE) moves.add(sq + Direction.WEST);
-		}
+		newSq = sq + Direction.WEST;
+		if (!Square.isWestEdge(sq) && !Square.isLake(newSq) && myPieces[newSq] == Piece.NONE) moves.add(newSq);
 
 		return moves;
 	}
