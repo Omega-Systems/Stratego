@@ -5,4 +5,8 @@ public enum Color {
 	BLUE;
 	
 	public static Color startingColor = RED;
+	
+	public static final Color invert(Color color) {
+		return color == RED ? BLUE : RED;
+	}
 }

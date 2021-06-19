@@ -16,8 +16,8 @@ import javax.swing.JFrame;
 import de.omegasystems.Board;
 import de.omegasystems.BoardSetup;
 import de.omegasystems.Move;
+import de.omegasystems.Piece;
 import de.omegasystems.Square;
-import de.omegasystems.TileState;
 
 public class Renderer extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
 
@@ -27,12 +27,13 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 	private static final long serialVersionUID = 3150993161852184366L;
 
 	Board board;
-	int width, height;
+	int width, height, boardWidth, offsetX, offsetY;
 	final int lineWidth = 5;
 
 	Point mousePos;
-	int highlightedField = -1, targetField = -1;
-
+	int selectedField = -1;
+	boolean mousePressed;
+	
 	public static void main(String[] args) {
 		Board board = BoardSetup.getTestSetup();
 		Renderer renderer = new Renderer("Debug", 1000, 1000, board);
@@ -63,64 +64,72 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 		width = getWidth() - 16;
 		height = getHeight() - 39;
+		
+		boardWidth = Math.min(width, height);
+		offsetX = Math.max((width-boardWidth)/2, 0);
+		offsetY = Math.max((height-boardWidth)/2, 0);
+		
 		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = bufferedImage.createGraphics();
 
 		xg.translate(8, 31);
+		xg.translate(offsetX, offsetY);
 
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
-				int posX = (int) ((((float) width - lineWidth) / 10) * x);
-				int posY = (int) ((((float) height - lineWidth) / 10) * (9 - y));
-				if (highlightedField == Square.from(x, y) && targetField >= 0)
-					g.drawImage(ImageLoader.getImageForPiece(TileState.EMPTY), posX, posY, width / 10, height / 10,
-							null);
-				else
+				int posX = (int) ((((float) boardWidth - lineWidth) / 10) * x);
+				int posY = (int) ((((float) boardWidth - lineWidth) / 10) * (9 - y));
 					g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY,
-							width / 10, height / 10, null);
+							boardWidth / 10, boardWidth / 10, null);
+					if (mousePressed && selectedField == Square.from(x, y))
+						drawTileOverlay(g, new Color(0f, 0f, 0f, 0.5f), selectedField);
+						//g.drawImage(ImageLoader.getImageForPiece(TileState.EMPTY), posX, posY, width / 10, height / 10, null);
 			}
 		}
 		// overlay highlighted Tile
-		if (highlightedField >= 0) {
-			drawTileOverlay(g, new Color(0.0f, 0.0f, 1.0f, 0.2f), highlightedField);
-			if (targetField >= 0) {
-				drawTileOverlay(g, new Color(1f, 0f, 0f, 0.2f), targetField);
+		if (selectedField >= 0) {
+			drawTileOverlay(g, new Color(0.0f, 1.0f, 0.0f, 0.1f), selectedField);
+			int targetField = getFieldFromPos(mousePos.x, mousePos.y);
+				// drawTileOverlay(g, new Color(1f, 0f, 0f, 0.2f), targetField);
 				Color color = new Color(0.0f, 1f, 1f, 0.2f);
-				for (Integer move : board.generateMoves(highlightedField)) {
-					drawTileOverlay(g, color, move);
+				for (Integer move : board.generateMoves(selectedField)) {
+					if (move == targetField)
+						drawTileOverlay(g, new Color(0f, 1f, 0f, 0.3f), move);
+					else if(board.getPiece(de.omegasystems.Color.invert(board.curColor), move) != Piece.NONE)
+						drawTileOverlay(g, new Color(1f, 0f, 1f, 0.3f), move);
+					else 
+						drawTileOverlay(g, color, move);
 				}
-			}
 		}
 
 		g.setColor(new Color(15, 8, 15));
 
-		float factor = (((float) width - lineWidth) / 10);
+		float factor = (((float) boardWidth - lineWidth) / 10);
 		for (int x = 0; x < 11; x++) {
-			g.fillRect((int) (factor * x), 0, lineWidth, height);
+			g.fillRect((int) (factor * x), 0, lineWidth, boardWidth);
 		}
-		factor = (((float) height - lineWidth) / 10);
+		factor = (((float) boardWidth - lineWidth) / 10);
 		for (int y = 0; y < 11; y++) {
-			g.fillRect(0, (int) (factor * y), width, lineWidth);
+			g.fillRect(0, (int) (factor * y), boardWidth, lineWidth);
 		}
 
-		if (highlightedField >= 0 && targetField >= 00)
-			g.drawImage(ImageLoader.getImageForPiece(board.getTileState(highlightedField)), mousePos.x - 8 - width / 20,
-					mousePos.y - 31 - height / 20, width / 10, height / 10, null);
+		if (mousePressed && selectedField >= 0)
+			g.drawImage(ImageLoader.getImageForPiece(board.getTileState(selectedField)), mousePos.x - 8 - offsetX - boardWidth / 20,
+					mousePos.y - 31 - offsetY - boardWidth / 20, boardWidth / 10, boardWidth / 10, null);
 
 		Graphics2D g2dComponent = (Graphics2D) xg;
 		g2dComponent.drawImage(bufferedImage, null, 0, 0);
-
 	}
 
 	void drawTileOverlay(Graphics2D g, Color color, int pos) {
 		g.setColor(color);
-		g.fillRect((pos % 10) * (width / 10), (9 - (pos / 10)) * (height / 10), (int) (width / 10.0f),
-				(int) (height / 10.0f));
+		g.fillRect((pos % 10) * (boardWidth / 10), (9 - (pos / 10)) * (boardWidth / 10), (int) (boardWidth / 10.0f),
+				(int) (boardWidth / 10.0f));
 	}
 
 	int getFieldFromPos(int x, int y) {
-		int fieldX = (int) ((((float) x) - 8f) / width * 10);
-		int fieldY = (int) ((((float) y) - 31f) / height * 10);
+		int fieldX = (int) ((((float) x) - 8f - offsetX) / boardWidth * 10);
+		int fieldY = (int) ((((float) y) - 31f - offsetY) / boardWidth * 10);
 
 		return fieldX + (9 - fieldY) * 10;
 	}
@@ -164,49 +173,38 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		mousePressed = true;
+		mousePos = e.getPoint();
 		int newField = getFieldFromPos(e.getX(), e.getY());
-		if (highlightedField == newField)
-			highlightedField = -1;
-		else
-			highlightedField = newField;
+		if (board.getPiece(board.curColor, newField) != Piece.NONE) {
+			selectedField = newField;
+		} else if (selectedField >= 0 && board.generateMoves(selectedField).contains(newField)) {
+			board.move(Move.from(selectedField, newField));
+			selectedField = -1;
+		}
+		else selectedField = -1;
 		repaint();
-		/*
-		 * mousePos = e.getPoint(); int newField = getFieldFromPos(e.getX(), e.getY());
-		 * if (newField == highlightedField) highlightedField = -1; else if
-		 * (highlightedField >= 0 && board.getTileState(highlightedField) !=
-		 * TileState.EMPTY) { if
-		 * (board.generateMoves(highlightedField).contains(newField)) {
-		 * board.move(Move.from(highlightedField, newField)); highlightedField = -1; }
-		 * else { highlightedField = newField; } } else
-		 * if(!board.generateMoves(newField).isEmpty()){ highlightedField = newField; }
-		 * repaint();
-		 */
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (highlightedField >= 0) {
-			if (targetField >= 0 && board.generateMoves(highlightedField).contains(targetField))
-				board.move(Move.from(highlightedField, targetField));
-			highlightedField = -1;
-			targetField = -1;
-			repaint();
+		mousePressed = false;
+		int newField = getFieldFromPos(e.getX(), e.getY());
+		if(selectedField >= 0 && newField != selectedField && board.generateMoves(selectedField).contains(newField)) {
+			board.move(Move.from(selectedField, newField));
+			selectedField = -1;
 		}
+		repaint();
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		targetField = getFieldFromPos(e.getX(), e.getY());
-		if (highlightedField < 0 && !board.generateMoves(targetField).isEmpty())
-			highlightedField = getFieldFromPos(e.getX(), e.getY());
 		mousePos = e.getPoint();
-
 		repaint();
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-
 	}
 
 }
