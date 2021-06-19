@@ -83,7 +83,7 @@ public class Board {
 		// Execute capture
 		myPieces[toSq] = captureResult == 1 ? myPiece : Piece.NONE;
 		enemyPieces[toSq] = captureResult == -1 ? enemyPiece : Piece.NONE;
-		myPieces[enemyPiece] = Piece.NONE;
+		myPieces[fromSq] = Piece.NONE;
 		
 		// Switch color and increment move counter
 		curColor = curColor == Color.BLUE ? Color.RED : Color.BLUE;
