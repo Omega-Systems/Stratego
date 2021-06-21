@@ -43,4 +43,8 @@ public class Piece {
 	public static String getRepr(int piece) {
 		return REPRS[Math.abs(piece)];
 	}
+	
+	public static boolean isMoveable(int piece) {
+		return piece != Piece.NONE && piece != Piece.FLAG && piece != Piece.BOMB;
+	}
 }

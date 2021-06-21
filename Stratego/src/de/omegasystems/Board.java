@@ -98,8 +98,8 @@ public class Board {
 			boolean redHasPieces = false;
 			boolean blueHasPieces = false;
 			for (int i = 0; i < 100; i++) {
-				if (redPieces[i] != Piece.NONE) redHasPieces = true;
-				if (bluePieces[i] != Piece.NONE) blueHasPieces = true;
+				if (Piece.isMoveable(redPieces[i])) redHasPieces = true;
+				if (Piece.isMoveable(bluePieces[i])) blueHasPieces = true;
 			}
 			
 			if (redHasPieces && blueHasPieces) state = BoardState.INGAME;
