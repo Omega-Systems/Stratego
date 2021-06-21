@@ -22,6 +22,11 @@ public abstract class GameStateRenderer implements MouseMotionListener, MouseLis
 	abstract void render(Graphics2D g);
 	
 	/**
+	 * Called after every property is set on the StateRenderer
+	 */
+	abstract void init();
+	
+	/**
 	 * Returns the windowState that should be rendered next.<br><br>
 	 * This method is used to communicate state changes to the renderer by returning the desired State at a certain condition 
 	 * or keeping the state by returning the current state. 

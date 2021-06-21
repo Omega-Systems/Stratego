@@ -107,7 +107,7 @@ public class StateRendererGame extends GameStateRenderer {
 
 	@Override
 	public WindowState getNextWindowState() {
-		return board.getBoardState() == BoardState.INGAME ? WindowState.GAME : WindowState.MAIN_MENU;
+		return board.getBoardState() == BoardState.INGAME ? WindowState.GAME : WindowState.RESULT;
 	}
 
 	@Override
@@ -170,5 +170,10 @@ public class StateRendererGame extends GameStateRenderer {
 	@Override
 	public void keyReleased(KeyEvent e) {
 
+	}
+
+	@Override
+	void init() {
+		board.setBoardState(BoardState.INGAME);
 	}
 }

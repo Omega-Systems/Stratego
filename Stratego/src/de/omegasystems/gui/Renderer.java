@@ -14,7 +14,6 @@ import javax.swing.JFrame;
 
 import de.omegasystems.Board;
 import de.omegasystems.BoardSetup;
-import de.omegasystems.BoardState;
 
 public class Renderer extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
 
@@ -59,6 +58,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 	@Override
 	public void paint(Graphics xg) {
+//		System.out.println(currentGameStateRenderer.board.getBoardState());
 		width = getWidth();
 		height = getHeight();
 		currentGameStateRenderer.width = width - 16;
@@ -81,20 +81,18 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 	}
 
 	private void updateGameStateRenderer(WindowState state) {
+		GameStateRenderer oldGameStateRenderer = currentGameStateRenderer;
 		switch (state) {
 
-		case MAIN_MENU:
-			currentGameStateRenderer = new StateRendererMenu(); 
-			break;
-		case GAME:
-			currentGameStateRenderer = new StateRendererGame();
-			currentGameStateRenderer.board = BoardSetup.getTestSetup();
-			currentGameStateRenderer.board.setBoardState(BoardState.INGAME);
-			break;
+		case MAIN_MENU: currentGameStateRenderer = new StateRendererMenu(); break;
+		case GAME: currentGameStateRenderer = new StateRendererGame(); break;
+		case RESULT: currentGameStateRenderer = new StateRendererResults(); break;
 		default: 
 		}
 		currentGameStateRenderer.frame = this;
+		currentGameStateRenderer.board = oldGameStateRenderer.board;
 		currentState = state;
+		currentGameStateRenderer.init();
 		repaint();
 	}
 

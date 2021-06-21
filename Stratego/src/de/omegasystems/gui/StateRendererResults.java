@@ -1,16 +1,11 @@
 package de.omegasystems.gui;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.Random;
 
-import de.omegasystems.BoardSetup;
-
-public class StateRendererMenu extends GameStateRenderer{
+public class StateRendererResults extends GameStateRenderer{
 
 	boolean clicked = false;
 	
@@ -21,7 +16,7 @@ public class StateRendererMenu extends GameStateRenderer{
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		frame.repaint();
+		
 	}
 
 	@Override
@@ -67,30 +62,35 @@ public class StateRendererMenu extends GameStateRenderer{
 
 	@Override
 	void render(Graphics2D g) {
-		g.drawImage(ImageLoader.mainImage, 0, 0, width, height, null);
-		g.setColor(new Color(new Random().nextInt(100000000)));
-		renderFont("Kauft meinen Merch!", 50, width/2, height/2-20, g);
-		//g.setColor(Color.BLACK);
-		renderFont("https://toastarmy.eu/merch", 20, width/2, height/2+20, g);
+		switch (board.getBoardState()) {
+		case DRAW:
+			g.setColor(Color.GRAY);
+			g.drawString("Draw", width/2, height/2);
+			break;
+
+		case VICTORY_BLUE:
+			g.setColor(Color.BLUE);
+			g.drawString("Blue is victorious", width/2, height/2);
+			break;
+			
+		case VICTORY_RED:
+			g.setColor(Color.RED);
+			g.drawString("Red is victorious", width/2, height/2);
+			break;
+			
+		default:
+			break;
+		}
+//		g.drawImage(ImageLoader.mainImage, 0, 0, width, height, null);
 	}
 
-	private void renderFont(String string, int size, int x, int y, Graphics2D g) {
-		g.setFont(new Font("TimesRoman", Font.BOLD, size));
-		FontMetrics metrics = g.getFontMetrics();
-	    int nx = x - (metrics.stringWidth(string) / 2);
-	    int ny = y - (metrics.getHeight() / 2) + metrics.getAscent();
-	    
-		g.drawString(string, nx, ny);
-	}
-	
 	@Override
 	WindowState getNextWindowState() {
-		return clicked ? WindowState.GAME : WindowState.MAIN_MENU;
+		return clicked ? WindowState.MAIN_MENU : WindowState.RESULT;
 	}
 
 	@Override
 	void init() {
-		board = BoardSetup.getTestSetup();
 	}
 
 	

@@ -1,6 +1,5 @@
 package de.omegasystems;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,8 +78,6 @@ public class Board {
 		int myPiece = myPieces[fromSq];
 		int enemyPiece = enemyPieces[toSq];
 		
-		if (enemyPiece == Piece.FLAG) state = BoardState.getVictory(curColor);
-		
 		// Find capture result
 		int captureResult = 0; // -1: Defender wins; 0: Both die; 1: Attacker wins;
 		if (myPiece == Piece.SPY && enemyPiece == Piece.RANK1) captureResult = 1;
@@ -94,19 +91,19 @@ public class Board {
 		enemyPieces[toSq] = captureResult == -1 ? enemyPiece : Piece.NONE;
 		myPieces[fromSq] = Piece.NONE;
 		
-		if (captureResult != 0) {
-			boolean redHasPieces = false;
-			boolean blueHasPieces = false;
-			for (int i = 0; i < 100; i++) {
-				if (Piece.isMoveable(redPieces[i])) redHasPieces = true;
-				if (Piece.isMoveable(bluePieces[i])) blueHasPieces = true;
-			}
-			
-			if (redHasPieces && blueHasPieces) state = BoardState.INGAME;
-			if (redHasPieces && !blueHasPieces) state = BoardState.VICTORY_RED;
-			if (!redHasPieces && blueHasPieces) state = BoardState.VICTORY_BLUE;
-			if (!redHasPieces && !blueHasPieces) state = BoardState.DRAW;
+		boolean redHasPieces = false;
+		boolean blueHasPieces = false;
+		for (int i = 0; i < 100; i++) {
+			if (Piece.isMoveable(redPieces[i])) redHasPieces = true;
+			if (Piece.isMoveable(bluePieces[i])) blueHasPieces = true;
 		}
+		
+		if (redHasPieces && !blueHasPieces) state = BoardState.VICTORY_RED;
+		if (!redHasPieces && blueHasPieces) state = BoardState.VICTORY_BLUE;
+		if (!redHasPieces && !blueHasPieces) state = BoardState.DRAW;
+		
+		//Win if the captured piece is the enemy flag
+		if (enemyPiece == Piece.FLAG) state = BoardState.getVictory(curColor);
 		
 		// Switch color and increment move counter
 		curColor = curColor == Color.BLUE ? Color.RED : Color.BLUE;
