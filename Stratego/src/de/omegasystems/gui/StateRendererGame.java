@@ -82,8 +82,8 @@ public class StateRendererGame extends GameStateRenderer {
 	void drawTileOverlay(Graphics2D g, Color color, int pos) {
 		g.setColor(color);
 		int rectWidth = (int) (boardWidth / 10.0f) - (lineWidth*2);
-		g.fillRect((int) ((pos % 10) * (boardWidth / 10.0f)) + (lineWidth/2),
-				(int) ((9 - (pos / 10)) * (boardWidth / 10.0f)) + (lineWidth/2), rectWidth, rectWidth);
+		g.fillRect((int) (((pos % 10) * (boardWidth / 10.0f)) + (lineWidth/2f)),
+				(int) (((9 - (pos / 10)) * (boardWidth / 10.0f)) + (lineWidth/2f)), rectWidth, rectWidth);
 	}
 
 	int getFieldFromPos(int x, int y) {
@@ -115,7 +115,7 @@ public class StateRendererGame extends GameStateRenderer {
 		mousePressed = true;
 		mousePos = e.getPoint();
 		int newField = getFieldFromPos(e.getX(), e.getY());
-		if (board.getPiece(board.curColor, newField) != Piece.NONE) {
+		if (Piece.isMoveable(board.getPiece(board.curColor, newField))) {
 			selectedField = newField;
 		} else if (selectedField >= 0 && board.generateMoves(selectedField).contains(newField)) {
 			board.move(Move.from(selectedField, newField));
