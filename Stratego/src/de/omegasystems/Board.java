@@ -63,6 +63,10 @@ public class Board {
 	public BoardState getBoardState() {
 		return this.state;
 	}
+	
+	public void setBoardState(BoardState boardState) {
+		this.state = boardState;
+	}
 
 	public void move(int move) {
 		int[] myPieces = this.curColor == Color.RED ? redPieces : bluePieces;
@@ -90,11 +94,18 @@ public class Board {
 		enemyPieces[toSq] = captureResult == -1 ? enemyPiece : Piece.NONE;
 		myPieces[fromSq] = Piece.NONE;
 		
-		if (captureResult == 1) {
-			boolean isWon = true;
+		if (captureResult != 0) {
+			boolean redHasPieces = false;
+			boolean blueHasPieces = false;
 			for (int i = 0; i < 100; i++) {
-				
+				if (redPieces[i] != Piece.NONE) redHasPieces = true;
+				if (bluePieces[i] != Piece.NONE) blueHasPieces = true;
 			}
+			
+			if (redHasPieces && blueHasPieces) state = BoardState.INGAME;
+			if (redHasPieces && !blueHasPieces) state = BoardState.VICTORY_RED;
+			if (!redHasPieces && blueHasPieces) state = BoardState.VICTORY_BLUE;
+			if (!redHasPieces && !blueHasPieces) state = BoardState.DRAW;
 		}
 		
 		// Switch color and increment move counter
