@@ -1,10 +1,8 @@
 package de.omegasystems;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class Square {
 	private static final List<Integer> LAKES = Arrays.asList(42, 43, 46, 47, 52, 53, 56, 57);

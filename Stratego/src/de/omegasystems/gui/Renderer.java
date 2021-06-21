@@ -21,11 +21,11 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 	 */
 	private static final long serialVersionUID = 3150993161852184366L;
 
-	Board board;
+	private GameStateRenderer currentGameStateRenderer;
+	private WindowState currentState;
 
-	private GameStateRenderer gameStateRenderer;
 	private int width, height;
-	
+
 	public static void main(String[] args) {
 		Board board = BoardSetup.getTestSetup();
 		Renderer renderer = new Renderer("Debug", 1000, 1000, board);
@@ -34,14 +34,15 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 	public Renderer(String title, int width, int height, Board board) {
 		super(title);
-		this.board = board;
 		this.width = width;
 		this.height = height;
 
-		this.gameStateRenderer = new GameStateRendererGame();
-		gameStateRenderer.frame = this;
-		gameStateRenderer.board = board;
-		
+		currentState = WindowState.MAIN_MENU;
+
+		this.currentGameStateRenderer = new StateRendererMenu();
+		currentGameStateRenderer.frame = this;
+		currentGameStateRenderer.board = board;
+
 		setUndecorated(false);
 		setSize(width, height);
 		setResizable(true);
@@ -58,51 +59,90 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 	public void paint(Graphics xg) {
 		width = getWidth();
 		height = getHeight();
-		gameStateRenderer.width = width - 16;
-		gameStateRenderer.height = height - 39;
-		
+		currentGameStateRenderer.width = width - 16;
+		currentGameStateRenderer.height = height - 39;
+
 		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = bufferedImage.createGraphics();
-		
-		gameStateRenderer.render(g);
-		
+
+		currentGameStateRenderer.render(g);
+
 		xg.translate(8, 31);
 		Graphics2D g2dComponent = (Graphics2D) xg;
 		g2dComponent.drawImage(bufferedImage, null, 0, 0);
+
+		WindowState windowState = currentGameStateRenderer.getNextWindowState();
+		if (windowState != currentState)
+			updateGameStateRenderer(windowState);
+	}
+
+	private void updateGameStateRenderer(WindowState state) {
+		switch (state) {
+
+		case MAIN_MENU:
+			currentGameStateRenderer = new StateRendererMenu(); 
+			break;
+		case GAME:
+			currentGameStateRenderer = new StateRendererGame();
+			currentGameStateRenderer.board = BoardSetup.getTestSetup();
+			break;
+		default: 
+		}
+		currentGameStateRenderer.frame = this;
+		currentState = state;
+		repaint();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
 			System.exit(69);
-		gameStateRenderer.keyPressed(e);
+		currentGameStateRenderer.keyPressed(e);
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {gameStateRenderer.keyReleased(e);}
+	public void keyReleased(KeyEvent e) {
+		currentGameStateRenderer.keyReleased(e);
+	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {gameStateRenderer.keyTyped(e);}
+	public void keyTyped(KeyEvent e) {
+		currentGameStateRenderer.keyTyped(e);
+	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {gameStateRenderer.mouseClicked(e);}
+	public void mouseClicked(MouseEvent e) {
+		currentGameStateRenderer.mouseClicked(e);
+	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {gameStateRenderer.mouseEntered(e);}
+	public void mouseEntered(MouseEvent e) {
+		currentGameStateRenderer.mouseEntered(e);
+	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {gameStateRenderer.mouseExited(e);}
+	public void mouseExited(MouseEvent e) {
+		currentGameStateRenderer.mouseExited(e);
+	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {gameStateRenderer.mousePressed(e);}
+	public void mousePressed(MouseEvent e) {
+		currentGameStateRenderer.mousePressed(e);
+	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {gameStateRenderer.mouseReleased(e);}
+	public void mouseReleased(MouseEvent e) {
+		currentGameStateRenderer.mouseReleased(e);
+	}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {gameStateRenderer.mouseDragged(e);}
+	public void mouseDragged(MouseEvent e) {
+		currentGameStateRenderer.mouseDragged(e);
+	}
 
 	@Override
-	public void mouseMoved(MouseEvent e) {gameStateRenderer.mouseMoved(e);}
+	public void mouseMoved(MouseEvent e) {
+		currentGameStateRenderer.mouseMoved(e);
+	}
 
 }

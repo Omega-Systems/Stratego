@@ -12,7 +12,7 @@ import de.omegasystems.Board;
 public abstract class GameStateRenderer implements MouseMotionListener, MouseListener, KeyListener{
 
 	Board board;
-	int width, height, boardWidth, offsetX, offsetY;
+	int width, height;
 	JFrame frame;
 	
 	/**

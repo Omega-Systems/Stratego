@@ -16,6 +16,8 @@ public class ImageLoader {
 
 	public static Map<TileState, BufferedImage> map = new HashMap<>();
 	
+	public static BufferedImage mainImage;
+	
 	private static final File WORKING_DIR = new File(System.getProperty("user.dir")+"/");
 	
 	public static BufferedImage getImageForPiece(TileState tileState) {
@@ -29,6 +31,11 @@ public class ImageLoader {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+		try {
+			mainImage = loadImage("barrel");
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

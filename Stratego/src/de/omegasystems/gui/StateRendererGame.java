@@ -10,7 +10,7 @@ import de.omegasystems.Move;
 import de.omegasystems.Piece;
 import de.omegasystems.Square;
 
-public class GameStateRendererGame extends GameStateRenderer {
+public class StateRendererGame extends GameStateRenderer {
 
 	int boardWidth, offsetX, offsetY;
 	final int lineWidth = 2;
@@ -111,8 +111,7 @@ public class GameStateRendererGame extends GameStateRenderer {
 
 	@Override
 	public WindowState getNextWindowState() {
-		// TODO Auto-generated method stub
-		return null;
+		return WindowState.GAME;
 	}
 
 	@Override
