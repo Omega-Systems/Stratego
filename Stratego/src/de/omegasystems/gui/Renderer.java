@@ -1,5 +1,6 @@
 package de.omegasystems.gui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -13,6 +14,7 @@ import javax.swing.JFrame;
 
 import de.omegasystems.Board;
 import de.omegasystems.BoardSetup;
+import de.omegasystems.BoardState;
 
 public class Renderer extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
 
@@ -64,7 +66,9 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = bufferedImage.createGraphics();
-
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, width, height);
+		
 		currentGameStateRenderer.render(g);
 
 		xg.translate(8, 31);
@@ -85,6 +89,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 		case GAME:
 			currentGameStateRenderer = new StateRendererGame();
 			currentGameStateRenderer.board = BoardSetup.getTestSetup();
+			currentGameStateRenderer.board.setBoardState(BoardState.INGAME);
 			break;
 		default: 
 		}

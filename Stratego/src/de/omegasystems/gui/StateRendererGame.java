@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import de.omegasystems.BoardState;
 import de.omegasystems.Move;
 import de.omegasystems.Piece;
 import de.omegasystems.Square;
@@ -15,57 +16,50 @@ public class StateRendererGame extends GameStateRenderer {
 	int boardWidth, offsetX, offsetY;
 	final int lineWidth = 2;
 
-	private Color backgroundColor = Color.BLACK, 
-			highlightedFieldColor = new Color(0.0f, 1.0f, 0.0f, 0.1f),
-			blackedFieldColor = new Color(0f, 0f, 0f, 0.5f),
-			possibleMovesColor = new Color(0.0f, 1f, 1f, 0.2f),
-			selectedMoveColor = new Color(0f, 1f, 0f, 0.3f),
-			captureMoveColor = new Color(1f, 0f, 1f, 0.3f);
-	
+	private Color backgroundColor = Color.BLACK, highlightedFieldColor = new Color(0.0f, 1.0f, 0.0f, 0.1f),
+			blackedFieldColor = new Color(0f, 0f, 0f, 0.5f), possibleMovesColor = new Color(0.0f, 1f, 1f, 0.2f),
+			selectedMoveColor = new Color(0f, 1f, 0f, 0.3f), captureMoveColor = new Color(1f, 0f, 1f, 0.3f);
+
 	Point mousePos;
 	int selectedField = -1;
 	boolean mousePressed;
-	
+
 	@Override
 	public void render(Graphics2D g) {
-		
+
 		boardWidth = Math.min(width, height);
-		offsetX = Math.max((width-boardWidth)/2, 0);
-		offsetY = Math.max((height-boardWidth)/2, 0);
-		
+		offsetX = Math.max((width - boardWidth) / 2, 0);
+		offsetY = Math.max((height - boardWidth) / 2, 0);
+
 		g.setColor(backgroundColor);
 		g.fillRect(0, 0, width, height);
-		
-		
-		//xg.translate(8, 32);
+
+		// xg.translate(8, 32);
 		g.translate(offsetX, offsetY);
 
-		
-		
-		
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
 				int posX = (int) ((((float) boardWidth - lineWidth) / 10) * x);
 				int posY = (int) ((((float) boardWidth - lineWidth) / 10) * (9 - y));
-					g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY,
-							boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth, null);
-					if (mousePressed && selectedField == Square.from(x, y))
-						drawTileOverlay(g, blackedFieldColor, selectedField);
+				g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY,
+						boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth, null);
+				if (mousePressed && selectedField == Square.from(x, y))
+					drawTileOverlay(g, blackedFieldColor, selectedField);
 			}
 		}
 		// overlay highlighted Tile
 		if (selectedField >= 0) {
 			drawTileOverlay(g, highlightedFieldColor, selectedField);
 			int targetField = getFieldFromPos(mousePos.x, mousePos.y);
-				// drawTileOverlay(g, new Color(1f, 0f, 0f, 0.2f), targetField);
-				for (Integer move : board.generateMoves(selectedField)) {
-					if (move == targetField)
-						drawTileOverlay(g, selectedMoveColor, move);
-					else if(board.getPiece(de.omegasystems.Color.invert(board.curColor), move) != Piece.NONE)
-						drawTileOverlay(g, captureMoveColor, move);
-					else 
-						drawTileOverlay(g, possibleMovesColor, move);
-				}
+			// drawTileOverlay(g, new Color(1f, 0f, 0f, 0.2f), targetField);
+			for (Integer move : board.generateMoves(selectedField)) {
+				if (move == targetField)
+					drawTileOverlay(g, selectedMoveColor, move);
+				else if (board.getPiece(de.omegasystems.Color.invert(board.curColor), move) != Piece.NONE)
+					drawTileOverlay(g, captureMoveColor, move);
+				else
+					drawTileOverlay(g, possibleMovesColor, move);
+			}
 		}
 
 		g.setColor(backgroundColor);
@@ -80,14 +74,16 @@ public class StateRendererGame extends GameStateRenderer {
 		}
 
 		if (mousePressed && selectedField >= 0)
-			g.drawImage(ImageLoader.getImageForPiece(board.getTileState(selectedField)), mousePos.x - 8 - offsetX - boardWidth / 20,
-					mousePos.y - 32 - offsetY - boardWidth / 20, boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth, null);
+			g.drawImage(ImageLoader.getImageForPiece(board.getTileState(selectedField)),
+					mousePos.x - 8 - offsetX - boardWidth / 20, mousePos.y - 32 - offsetY - boardWidth / 20,
+					boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth, null);
 	}
 
 	void drawTileOverlay(Graphics2D g, Color color, int pos) {
 		g.setColor(color);
-		int rectWidth = (int) (boardWidth / 10.0f)-lineWidth;
-		g.fillRect((pos % 10) * (boardWidth / 10), (9 - (pos / 10)) * (boardWidth / 10), rectWidth, rectWidth);
+		int rectWidth = (int) (boardWidth / 10.0f) - (lineWidth*2);
+		g.fillRect((int) ((pos % 10) * (boardWidth / 10.0f)) + (lineWidth/2),
+				(int) ((9 - (pos / 10)) * (boardWidth / 10.0f)) + (lineWidth/2), rectWidth, rectWidth);
 	}
 
 	int getFieldFromPos(int x, int y) {
@@ -111,7 +107,7 @@ public class StateRendererGame extends GameStateRenderer {
 
 	@Override
 	public WindowState getNextWindowState() {
-		return WindowState.GAME;
+		return board.getBoardState() == BoardState.INGAME ? WindowState.GAME : WindowState.MAIN_MENU;
 	}
 
 	@Override
@@ -124,8 +120,8 @@ public class StateRendererGame extends GameStateRenderer {
 		} else if (selectedField >= 0 && board.generateMoves(selectedField).contains(newField)) {
 			board.move(Move.from(selectedField, newField));
 			selectedField = -1;
-		}
-		else selectedField = -1;
+		} else
+			selectedField = -1;
 		frame.repaint();
 	}
 
@@ -133,7 +129,7 @@ public class StateRendererGame extends GameStateRenderer {
 	public void mouseReleased(MouseEvent e) {
 		mousePressed = false;
 		int newField = getFieldFromPos(e.getX(), e.getY());
-		if(selectedField >= 0 && newField != selectedField && board.generateMoves(selectedField).contains(newField)) {
+		if (selectedField >= 0 && newField != selectedField && board.generateMoves(selectedField).contains(newField)) {
 			board.move(Move.from(selectedField, newField));
 			selectedField = -1;
 		}
@@ -145,34 +141,34 @@ public class StateRendererGame extends GameStateRenderer {
 		mousePos = e.getPoint();
 		frame.repaint();
 	}
-	
+
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
+
 	}
 }
