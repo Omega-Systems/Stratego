@@ -29,6 +29,7 @@ public class ImageLoader {
 			try {
 				map.put(tileState, loadImage(tileState.name()));
 			} catch (IOException e) {
+				System.err.println("File: "+tileState.name());
 				e.printStackTrace();
 			}
 		}
@@ -40,7 +41,7 @@ public class ImageLoader {
 	}
 	
 	private static BufferedImage loadImage(String name) throws IOException {
-		File imageFile = new File(WORKING_DIR, "/Stratego/res/themes/theme_00/"+name+".png");
+		File imageFile = new File(WORKING_DIR, "/Stratego/res/themes/theme_01/"+name+".png");
 		BufferedImage image = ImageIO.read(imageFile);
 		return image;
 	}

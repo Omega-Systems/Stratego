@@ -16,9 +16,12 @@ public class StateRendererGame extends GameStateRenderer {
 	int boardWidth, offsetX, offsetY;
 	final int lineWidth = 2;
 
-	private Color backgroundColor = Color.BLACK, highlightedFieldColor = new Color(0.0f, 1.0f, 0.0f, 0.1f),
-			blackedFieldColor = new Color(0f, 0f, 0f, 0.5f), possibleMovesColor = new Color(0.0f, 1f, 1f, 0.2f),
-			selectedMoveColor = new Color(0f, 1f, 0f, 0.3f), captureMoveColor = new Color(1f, 0f, 1f, 0.3f);
+	private Color backgroundColor = Color.GREEN, 
+			highlightedFieldColor = new Color(0.0f, 1.0f, 0.0f, 0.1f),
+			blackedFieldColor = new Color(0f, 0f, 0f, 0.5f), 
+			possibleMovesColor = new Color(0.0f, 1f, 1f, 0.2f),
+			selectedMoveColor = new Color(0f, 1f, 0f, 0.3f), 
+			captureMoveColor = new Color(1f, 0f, 1f, 0.3f);
 
 	Point mousePos;
 	int selectedField = -1;
@@ -81,9 +84,9 @@ public class StateRendererGame extends GameStateRenderer {
 
 	void drawTileOverlay(Graphics2D g, Color color, int pos) {
 		g.setColor(color);
-		int rectWidth = (int) (boardWidth / 10.0f) - (lineWidth*2);
-		g.fillRect((int) (((pos % 10) * (boardWidth / 10.0f)) + (lineWidth/2f)),
-				(int) (((9 - (pos / 10)) * (boardWidth / 10.0f)) + (lineWidth/2f)), rectWidth, rectWidth);
+		int rectWidth = (int) (boardWidth / 10.0f) - (lineWidth * 2);
+		g.fillRect((int) (((pos % 10) * (boardWidth / 10.0f)) + (lineWidth / 2f)),
+				(int) (((9 - (pos / 10)) * (boardWidth / 10.0f)) + (lineWidth / 2f)), rectWidth, rectWidth);
 	}
 
 	int getFieldFromPos(int x, int y) {
