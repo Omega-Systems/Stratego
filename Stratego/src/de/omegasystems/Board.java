@@ -59,6 +59,10 @@ public class Board {
 		int[] myPieces = color == Color.RED ? redPieces : bluePieces;
 		myPieces[pos] = piece;
 	}
+	
+	public BoardState getBoardState() {
+		return this.state;
+	}
 
 	public void move(int move) {
 		int[] myPieces = this.curColor == Color.RED ? redPieces : bluePieces;
