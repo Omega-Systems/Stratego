@@ -1,10 +1,13 @@
 package de.omegasystems;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class Square {
-	private static final Set<Integer> LAKES = Set.of(42, 43, 46, 47, 52, 53, 56, 57);
+	private static final List<Integer> LAKES = Arrays.asList(42, 43, 46, 47, 52, 53, 56, 57);
 	
 	public static int from(String str) {
 		if (str.length() != 2) {

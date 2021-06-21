@@ -1,5 +1,6 @@
 package de.omegasystems;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +85,13 @@ public class Board {
 		myPieces[toSq] = captureResult == 1 ? myPiece : Piece.NONE;
 		enemyPieces[toSq] = captureResult == -1 ? enemyPiece : Piece.NONE;
 		myPieces[fromSq] = Piece.NONE;
+		
+		if (captureResult == 1) {
+			boolean isWon = true;
+			for (int i = 0; i < 100; i++) {
+				
+			}
+		}
 		
 		// Switch color and increment move counter
 		curColor = curColor == Color.BLUE ? Color.RED : Color.BLUE;
