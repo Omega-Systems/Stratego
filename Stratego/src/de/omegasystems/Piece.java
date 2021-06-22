@@ -1,5 +1,7 @@
 package de.omegasystems;
 
+import java.util.Arrays;
+
 public class Piece {
 	public static final int NONE	= 0;
 	public static final int FLAG	= 1;
@@ -42,6 +44,10 @@ public class Piece {
 	
 	public static String getRepr(int piece) {
 		return REPRS[Math.abs(piece)];
+	}
+	
+	public static int getPiece(String name) {
+		return Arrays.asList(NAMES).indexOf(name);
 	}
 	
 	public static boolean isMoveable(int piece) {

@@ -1,6 +1,13 @@
 package de.omegasystems;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
+
 public class BoardSetup {
+	private static final File WORKING_DIR = new File(System.getProperty("user.dir")+"/");
+	
 	public static Board getTestSetup() {
 		Board board = new Board();
 		board.setPiece(Color.RED, Piece.FLAG, Square.from("a0"));
@@ -26,6 +33,26 @@ public class BoardSetup {
 		board.setPiece(Color.BLUE, Piece.RANK2, Square.from("i6"));
 		board.setPiece(Color.BLUE, Piece.RANK1, Square.from("j6"));
 		board.setPiece(Color.BLUE, Piece.SPY, Square.from("i8"));
+		return board;
+	}
+	
+	public static Board getStandardSetup() {
+		Board board = new Board();
+		File setupFile = new File(WORKING_DIR, "/Stratego/res/setups/standard.txt");
+		Scanner setupReader = null;
+		try {
+			setupReader = new Scanner(setupFile);
+		} catch (FileNotFoundException e) { e.printStackTrace(); }
+		
+		for (int y = 3; y >= 0; y--) {
+			String line = setupReader.nextLine();
+			String[] pieces = line.split(" ");
+			for (int x = 0; x < 10; x++) {
+				board.setPiece(Color.RED, Piece.getPiece(pieces[x]), Square.from(x, y));
+				board.setPiece(Color.BLUE, Piece.getPiece(pieces[x]), Square.from(x, 9-y));
+			}
+		}
+		
 		return board;
 	}
 }

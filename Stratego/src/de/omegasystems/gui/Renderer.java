@@ -28,7 +28,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 	private int width, height;
 
 	public static void main(String[] args) {
-		Board board = BoardSetup.getTestSetup();
+		Board board = BoardSetup.getStandardSetup();
 		Renderer renderer = new Renderer("Debug", 1000, 1000, board);
 		renderer.repaint();
 	}
