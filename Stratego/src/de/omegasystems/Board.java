@@ -106,7 +106,7 @@ public class Board {
 		if (enemyPiece == Piece.FLAG) state = BoardState.getVictory(curColor);
 		
 		// Switch color and increment move counter
-		curColor = curColor == Color.BLUE ? Color.RED : Color.BLUE;
+		curColor = Color.invert(curColor);
 		moveCount++;
 	}
 
