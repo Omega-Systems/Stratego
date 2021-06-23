@@ -1,4 +1,4 @@
-package de.omegasystems.ai;
+package de.omegasystems.bot;
 
 import de.omegasystems.Board;
 
