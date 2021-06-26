@@ -61,6 +61,11 @@ public class StateRendererResults extends GameStateRenderer{
 	}
 
 	@Override
+	void render(Graphics2D g, int x, int y, int width, int height) {
+		render(g);
+	}
+	
+	@Override
 	void render(Graphics2D g) {
 		switch (board.getBoardState()) {
 		case DRAW:

@@ -22,14 +22,17 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 	 */
 	private static final long serialVersionUID = 3150993161852184366L;
 
-	private GameStateRenderer currentGameStateRenderer;
+	GameStateRenderer currentGameStateRenderer;
 	private WindowState currentState;
 
 	private int width, height;
 
+	private boolean isCustomRepaint;
+	int repaintX, repaintY, repaintWidth, repaintHeight;
+
 	public static void main(String[] args) {
 		Board board = BoardSetup.getStandardSetup();
-		Renderer renderer = new Renderer("Debug", 1000, 1000, board);
+		Renderer renderer = new Renderer("Stratego by Omega-Systems", 1000, 1000, board);
 		renderer.repaint();
 	}
 
@@ -38,11 +41,11 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 		this.width = width;
 		this.height = height;
 
-		currentState = WindowState.MAIN_MENU;
+		currentGameStateRenderer = GameStateRenderer.EMPTY_RENDERER;
+		updateGameStateRenderer(WindowState.MAIN_MENU);
 
-		this.currentGameStateRenderer = new StateRendererMenu();
-		currentGameStateRenderer.frame = this;
-		currentGameStateRenderer.board = board;
+		setIconImage(ImageLoader.mainImage);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setUndecorated(false);
 		setSize(width, height);
@@ -58,36 +61,64 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 	@Override
 	public void paint(Graphics xg) {
-//		System.out.println(currentGameStateRenderer.board.getBoardState());
 		width = getWidth();
 		height = getHeight();
 		currentGameStateRenderer.width = width - 16;
 		currentGameStateRenderer.height = height - 39;
+		if (isCustomRepaint) 
+			customRepaint(xg);
+		else {
+			BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = bufferedImage.createGraphics();
 
-		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, width, height);
+
+			currentGameStateRenderer.render(g);
+
+			xg.translate(8, 31);
+			Graphics2D g2dComponent = (Graphics2D) xg;
+			g2dComponent.drawImage(bufferedImage, null, 0, 0);
+		}
+			
+			WindowState windowState = currentGameStateRenderer.getNextWindowState();
+			if (windowState != currentState)
+				updateGameStateRenderer(windowState);
+	}
+	
+	void customRepaint(Graphics xg) {
+		BufferedImage bufferedImage = new BufferedImage(repaintWidth, repaintHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = bufferedImage.createGraphics();
+
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, width, height);
-		
+
 		currentGameStateRenderer.render(g);
 
 		xg.translate(8, 31);
 		Graphics2D g2dComponent = (Graphics2D) xg;
 		g2dComponent.drawImage(bufferedImage, null, 0, 0);
+	}
 
-		WindowState windowState = currentGameStateRenderer.getNextWindowState();
-		if (windowState != currentState)
-			updateGameStateRenderer(windowState);
+	@Override
+	public void repaint(int x, int y, int width, int height) {
+		super.repaint(x, y, width, height);
 	}
 
 	private void updateGameStateRenderer(WindowState state) {
 		GameStateRenderer oldGameStateRenderer = currentGameStateRenderer;
 		switch (state) {
 
-		case MAIN_MENU: currentGameStateRenderer = new StateRendererMenu(); break;
-		case GAME: currentGameStateRenderer = new StateRendererGame(); break;
-		case RESULT: currentGameStateRenderer = new StateRendererResults(); break;
-		default: 
+		case MAIN_MENU:
+			currentGameStateRenderer = new StateRendererMenu();
+			break;
+		case GAME:
+			currentGameStateRenderer = new StateRendererGame();
+			break;
+		case RESULT:
+			currentGameStateRenderer = new StateRendererResults();
+			break;
+		default:
 		}
 		currentGameStateRenderer.frame = this;
 		currentGameStateRenderer.board = oldGameStateRenderer.board;

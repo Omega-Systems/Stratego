@@ -6,13 +6,13 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.Random;
 
 import de.omegasystems.BoardSetup;
 
-public class StateRendererMenu extends GameStateRenderer{
+public class StateRendererMenu extends GameStateRenderer implements Runnable{
 
 	boolean clicked = false;
+	int curColor;
 	
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
@@ -21,7 +21,6 @@ public class StateRendererMenu extends GameStateRenderer{
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		frame.repaint();
 	}
 
 	@Override
@@ -64,11 +63,16 @@ public class StateRendererMenu extends GameStateRenderer{
 	public void keyTyped(KeyEvent arg0) {
 		
 	}
+	
+	@Override
+	void render(Graphics2D g, int x, int y, int width, int height) {
+		render(g);
+	}
 
 	@Override
 	void render(Graphics2D g) {
 		g.drawImage(ImageLoader.mainImage, 0, 0, width, height, null);
-		g.setColor(new Color(new Random().nextInt(100000000)));
+		g.setColor(Color.getHSBColor(curColor/100f, 1, 1));
 		renderFont("Kauft meinen Merch!", 50, width/2, height/2-20, g);
 		//g.setColor(Color.BLACK);
 		renderFont("https://toastarmy.eu/merch", 20, width/2, height/2+20, g);
@@ -91,8 +95,21 @@ public class StateRendererMenu extends GameStateRenderer{
 	@Override
 	void init() {
 		board = BoardSetup.getTestSetup();
+		new Thread(this).start();
 	}
 
-	
+	@Override
+	public void run() {
+		while(true) {
+			if(frame.currentGameStateRenderer!=this) return;
+			curColor++;
+			frame.repaint();
+			try {
+				Thread.sleep(30);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}		
+	}
 	
 }

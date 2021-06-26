@@ -40,12 +40,13 @@ public class StateRendererGame extends GameStateRenderer {
 		// xg.translate(8, 32);
 		g.translate(offsetX, offsetY);
 
+		ImageLoader.setDesiredTileSize(boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth);
+		
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
 				int posX = (int) ((((float) boardWidth - lineWidth) / 10) * x);
 				int posY = (int) ((((float) boardWidth - lineWidth) / 10) * (9 - y));
-				g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY,
-						boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth, null);
+				g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, null);
 				if (mousePressed && selectedField == Square.from(x, y))
 					drawTileOverlay(g, blackedFieldColor, selectedField);
 			}
@@ -78,8 +79,59 @@ public class StateRendererGame extends GameStateRenderer {
 
 		if (mousePressed && selectedField >= 0)
 			g.drawImage(ImageLoader.getImageForPiece(board.getTileState(selectedField)),
-					mousePos.x - 8 - offsetX - boardWidth / 20, mousePos.y - 32 - offsetY - boardWidth / 20,
-					boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth, null);
+					mousePos.x - 8 - offsetX - boardWidth / 20, mousePos.y - 32 - offsetY - boardWidth / 20, null);
+	}
+	
+
+	@Override
+	void render(Graphics2D g, int clipX, int clipY, int width, int height) {
+		boardWidth = Math.min(width, height);
+		offsetX = Math.max((width - boardWidth) / 2, 0);
+		offsetY = Math.max((height - boardWidth) / 2, 0);
+
+		// xg.translate(8, 32);
+		g.translate(offsetX, offsetY);
+
+		ImageLoader.setDesiredTileSize(boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth);
+		
+		for (int x = (clipX-offsetX)/10; x < (clipX-offsetX)/10+Math.ceil(width/10f); x++) {
+			for (int y = (clipY-offsetY)/10; y < (clipY-offsetY)/10+Math.ceil(height/10f); x++) {
+				int posX = (int) ((((float) boardWidth - lineWidth) / 10) * x);
+				int posY = (int) ((((float) boardWidth - lineWidth) / 10) * (9 - y));
+				g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, null);
+				if (mousePressed && selectedField == Square.from(x, y))
+					drawTileOverlay(g, blackedFieldColor, selectedField);
+			}
+		}
+		// overlay highlighted Tile
+		if (selectedField >= 0) {
+			drawTileOverlay(g, highlightedFieldColor, selectedField);
+			int targetField = getFieldFromPos(mousePos.x, mousePos.y);
+			// drawTileOverlay(g, new Color(1f, 0f, 0f, 0.2f), targetField);
+			for (Integer move : board.generateMoves(selectedField)) {
+				if (move == targetField)
+					drawTileOverlay(g, selectedMoveColor, move);
+				else if (board.getPiece(de.omegasystems.Color.invert(board.curColor), move) != Piece.NONE)
+					drawTileOverlay(g, captureMoveColor, move);
+				else
+					drawTileOverlay(g, possibleMovesColor, move);
+			}
+		}
+
+		g.setColor(backgroundColor);
+
+		float factor = (((float) boardWidth - lineWidth) / 10);
+		for (int x = 0; x < 11; x++) {
+			g.fillRect((int) (factor * x), 0, lineWidth, boardWidth);
+		}
+		factor = (((float) boardWidth - lineWidth) / 10);
+		for (int y = 0; y < 11; y++) {
+			g.fillRect(0, (int) (factor * y), boardWidth, lineWidth);
+		}
+
+		if (mousePressed && selectedField >= 0)
+			g.drawImage(ImageLoader.getImageForPiece(board.getTileState(selectedField)),
+					mousePos.x - 8 - offsetX - boardWidth / 20, mousePos.y - 32 - offsetY - boardWidth / 20, null);
 	}
 
 	void drawTileOverlay(Graphics2D g, Color color, int pos) {
@@ -141,8 +193,12 @@ public class StateRendererGame extends GameStateRenderer {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		int x = Math.min(mousePos.x, e.getX())-ImageLoader.getTileSizeX();
+		int y = Math.min(mousePos.y, e.getY())-ImageLoader.getTileSizeY();
+		int width = Math.abs(mousePos.x-e.getX())+ImageLoader.getTileSizeX()*2;
+		int height = Math.abs(mousePos.y-e.getY())+ImageLoader.getTileSizeY()*2;
 		mousePos = e.getPoint();
-		frame.repaint();
+		frame.repaint(x, y, width, height);
 	}
 
 	@Override
