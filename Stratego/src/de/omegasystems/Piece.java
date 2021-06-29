@@ -3,19 +3,20 @@ package de.omegasystems;
 import java.util.Arrays;
 
 public class Piece {
-	public static final int NONE	= 0;
-	public static final int FLAG	= 1;
-	public static final int SPY		= 2;
-	public static final int RANK9	= 3;
-	public static final int RANK8	= 4;
-	public static final int RANK7	= 5;
-	public static final int RANK6	= 6;
-	public static final int RANK5	= 7;
-	public static final int RANK4	= 8;
-	public static final int RANK3	= 9;
-	public static final int RANK2	= 10;
-	public static final int RANK1	= 11;
-	public static final int BOMB	= 12;
+	public static final int NONE = 0,
+			FLAG	= 1,
+			SPY		= 2,
+			RANK9	= 3,
+			RANK8	= 4,
+			RANK7	= 5,
+			RANK6	= 6,
+			RANK5	= 7,
+			RANK4	= 8,
+			RANK3	= 9,
+			RANK2	= 10,
+			RANK1	= 11,
+			BOMB	= 12,
+			UNKNOWN = 13;
 	
 	
 	private static final String[] NAMES = {
@@ -31,11 +32,12 @@ public class Piece {
 			"rank3",
 			"rank2",
 			"rank1",
-			"bomb"
+			"bomb",
+			"unknown"
 	};
 	
 	private static final String[] REPRS = {
-			" ", "F", "S", "9", "8", "7", "6", "5", "4", "3", "2", "1", "B"
+			" ", "F", "S", "9", "8", "7", "6", "5", "4", "3", "2", "1", "B","?"
 	};
 	
 	public static String getName(int piece) {
