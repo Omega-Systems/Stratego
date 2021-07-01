@@ -34,7 +34,6 @@ public enum TileState {
 	public static TileState[] BLUE_PIECES;
 	
 	static {
-		
 		RED_PIECES = new TileState[]{
 				EMPTY,
 				RED_FLAG,
@@ -50,7 +49,6 @@ public enum TileState {
 				RED_RANK1,
 				RED_BOMB
 		};
-		
 		
 		BLUE_PIECES = new TileState[]{
 				EMPTY,

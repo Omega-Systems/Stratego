@@ -13,10 +13,14 @@ public class SimpleBot implements Bot {
 	public void move() {
 
 	}
+	
+	@Override
+	public void pushMove() {
+		
+	}
 
 	@Override
 	public int getMove() {
 		return 0;
-	}
-	
+	}	
 }
