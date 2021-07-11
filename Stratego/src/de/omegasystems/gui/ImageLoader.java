@@ -11,6 +11,11 @@ import java.util.Map.Entry;
 //github.com/Omega-Systems/Stratego.git
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import de.omegasystems.TileState;
 
@@ -22,7 +27,8 @@ public class ImageLoader {
 
 	public static BufferedImage mainImage;
 
-	private static final File WORKING_DIR = new File(System.getProperty("user.dir") + "/");
+	public static final File WORKING_DIR = new File(System.getProperty("user.dir") + "/");
+	private static File themeFile = new File(WORKING_DIR, "/Stratego/res/themes/theme_01/");
 
 	public static BufferedImage getImageForPiece(TileState tileState) {
 		return resizedMap.get(tileState);
@@ -62,8 +68,15 @@ public class ImageLoader {
 	}
 
 	private static BufferedImage loadImage(String name) throws IOException {
-		File imageFile = new File(WORKING_DIR, "/Stratego/res/themes/theme_01/" + name + ".png");
+		File imageFile = new File(themeFile, name + ".png");
 		BufferedImage image = ImageIO.read(imageFile);
 		return image;
+	}
+	
+	public static Clip LOAD_SOUND(String name) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(themeFile, name));
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioInputStream);
+        return clip;
 	}
 }

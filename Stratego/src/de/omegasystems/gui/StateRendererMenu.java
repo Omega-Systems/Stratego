@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+
+import javax.sound.sampled.Clip;
 
 import de.omegasystems.BoardSetup;
 
@@ -14,19 +17,43 @@ public class StateRendererMenu extends GameStateRenderer implements Runnable{
 	boolean clicked = false;
 	int curColor;
 	
+	static Clip selectClip, deselectClip, pressClip;
+	
+	static {
+		try {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private Rectangle button = new Rectangle(100, 100, 100, 20);
+	private boolean isInButton = false;
+	
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		
 	}
 
 	@Override
-	public void mouseMoved(MouseEvent arg0) {
+	public void mouseMoved(MouseEvent e) {
+		if(e.getX()-8-button.x>=0 && e.getX()-8-button.x<button.width &&
+				e.getY()-31-button.y>=0 && e.getY()-31-button.y<button.height) {
+			if(!isInButton) {
+				isInButton = true;
+				frame.repaint(button.x-8, button.y-31, button.width, button.height);
+			}
+		}  else if(isInButton) {
+			isInButton = false;
+			frame.repaint(button.x-8, button.y-31, button.width, button.height);
+		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		clicked = true;
-		frame.repaint();
+		if(isInButton) {
+			clicked = true;
+			frame.repaint();
+		}
 	}
 
 	@Override
@@ -76,6 +103,8 @@ public class StateRendererMenu extends GameStateRenderer implements Runnable{
 		renderFont("Kauft meinen Merch!", 50, width/2, height/2-20, g);
 		//g.setColor(Color.BLACK);
 		renderFont("https://toastarmy.eu/merch", 20, width/2, height/2+20, g);
+		g.setColor(isInButton ? Color.yellow : Color.green);
+		g.fillRect(button.x, button.y, button.width, button.height);
 	}
 
 	private void renderFont(String string, int size, int x, int y, Graphics2D g) {
@@ -100,8 +129,12 @@ public class StateRendererMenu extends GameStateRenderer implements Runnable{
 
 	@Override
 	public void run() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 		while(true) {
-			if(frame.currentGameStateRenderer!=this) return;
 			curColor++;
 			frame.repaint();
 			try {
