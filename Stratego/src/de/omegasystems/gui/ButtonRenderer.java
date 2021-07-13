@@ -37,6 +37,7 @@ public class ButtonRenderer {
 		font = new Font("Arial", Font.PLAIN, 11);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void recalculateShape() {
 		
 		//Calculates the biggest possible font size if the renderer has only a limited space to work with and distribute this space to each button.
@@ -45,7 +46,6 @@ public class ButtonRenderer {
 			sizePerButtonX -= borderDistanceY*2+buttonDistanceY;
 			for(int i = 1; i<=100; i++) {
 				Font nFont = font.deriveFont((float) i);
-				@SuppressWarnings("deprecation")
 				FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(nFont);
 				if(metrics.getHeight()<=sizePerButtonX)
 					font = nFont;
@@ -58,7 +58,17 @@ public class ButtonRenderer {
 		if(dynamicSizeY) {
 			FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
 			for(Button b : buttons) {
-				if(metrics.stringWidth(b.title) >= )
+				if(metrics.stringWidth(b.title) > sizeX-2*borderDistanceX)
+					sizeX = metrics.stringWidth(b.title)+2*borderDistanceX;
+				b.display = b.title;
+			}
+		} else {
+			FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
+			for(Button b : buttons) {
+				if(metrics.stringWidth(b.title) > sizeX-2*borderDistanceX)
+					for (int i = 0; i < array.length; i++) {
+						
+					}
 			}
 		}
 	}

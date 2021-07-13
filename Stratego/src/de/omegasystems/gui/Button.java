@@ -10,6 +10,7 @@ public abstract class Button {
 			ALIGN_TO_BORDER_VERTICAL = 0x00000100, ALIGN_TO_BORDER_HORIZONTAL = 0x00001000;
 
 	String title;
+	String display;
 	int textSize;
 	Color textColor, backgroundColor, highlightedColor, pressedColor;
 	Dimension size;
