@@ -123,7 +123,7 @@ public class StateRendererMenu extends GameStateRenderer implements Runnable{
 
 	@Override
 	void init() {
-		board = BoardSetup.getTestSetup();
+		board = BoardSetup.getStandardSetup();
 		new Thread(this).start();
 	}
 

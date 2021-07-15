@@ -41,7 +41,7 @@ public class ButtonRenderer {
 		if(dynamicSizeY) {
 			int posX = offsetX;
 			for (Button button : buttons) {
-				
+				g.fillRect(posX, offsetY, sizeX, height);
 			}
 		}
 	}
