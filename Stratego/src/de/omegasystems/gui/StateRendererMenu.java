@@ -16,18 +16,50 @@ public class StateRendererMenu extends GameStateRenderer implements Runnable{
 
 	boolean clicked = false;
 	int curColor;
+	ButtonRenderer menuButtons;
 	
 	static Clip selectClip, deselectClip, pressClip;
-	
-	static {
-		try {
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 	
 	private Rectangle button = new Rectangle(100, 100, 100, 20);
 	private boolean isInButton = false;
+	
+	public StateRendererMenu() {
+		menuButtons = new ButtonRenderer(100, 100, 200, 800);
+		menuButtons.alignBox = true;
+		menuButtons.dynamicSizeY = true;
+		menuButtons.borderDistanceX = 2;
+		menuButtons.borderDistanceY = 4;
+		menuButtons.buttonDistanceY = 4;
+		menuButtons.addButton(new Button("Start Game") {
+			
+			@Override
+			void released() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			void press() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		menuButtons.addButton(new Button("Quit") {
+			
+			@Override
+			void released() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			void press() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
 	
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
@@ -101,10 +133,8 @@ public class StateRendererMenu extends GameStateRenderer implements Runnable{
 		g.drawImage(ImageLoader.mainImage, 0, 0, width, height, null);
 		g.setColor(Color.getHSBColor(curColor/100f, 1, 1));
 		renderFont("Kauft meinen Merch!", 50, width/2, height/2-20, g);
-		//g.setColor(Color.BLACK);
 		renderFont("https://toastarmy.eu/merch", 20, width/2, height/2+20, g);
-		g.setColor(isInButton ? Color.yellow : Color.green);
-		g.fillRect(button.x, button.y, button.width, button.height);
+		menuButtons.render(g);
 	}
 
 	private void renderFont(String string, int size, int x, int y, Graphics2D g) {

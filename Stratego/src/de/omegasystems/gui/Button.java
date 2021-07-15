@@ -1,21 +1,15 @@
 package de.omegasystems.gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
 
 public abstract class Button {
 	String title;
 	String display;
-	int textSize;
 	Color textColor, backgroundColor, highlightedColor, pressedColor;
-	Dimension size;
 	int borderDistanceX, borderDistanceY;
 
-	public Button(String text, int width, int height, int textSize) {
+	public Button(String text) {
 		this.title = text;
-		this.size = new Dimension(width, height);
-		this.textSize = textSize;
 	}
 
 	/**
