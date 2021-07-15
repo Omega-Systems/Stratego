@@ -36,11 +36,21 @@ public class ButtonRenderer {
 		this.alignBox = alignButtonXToText;
 		font = new Font("Arial", Font.PLAIN, 11);
 	}
+	
+	public void render(Graphics2D g) {
+		if(dynamicSizeY) {
+			int posX = offsetX;
+			for (Button button : buttons) {
+				
+			}
+		}
+	}
 
 	@SuppressWarnings("deprecation")
 	public void recalculateShape() {
 		
-		//Calculates the biggest possible font size if the renderer has only a limited space to work with and distribute this space to each button.
+		//Calculates the biggest possible font height if the renderer has only a limited space to work with and distribute this space to each button.
+		//This applies a uniform
 		if(!dynamicSizeY) {
 			float sizePerButtonX = sizeX / ((float)buttons.size());
 			sizePerButtonX -= borderDistanceY*2+buttonDistanceY;
@@ -54,8 +64,8 @@ public class ButtonRenderer {
 			}
 		}
 		
-		//Calculates the x size of the largest button (longest text) if dynamic X is activated, else it crops the button's text
-		if(dynamicSizeY) {
+		//Calculates the x size of the largest button (longest text) if dynamic X aka alignBox is activated, else it crops the button's text
+		if(alignBox) {
 			FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
 			for(Button b : buttons) {
 				if(metrics.stringWidth(b.title) > sizeX-2*borderDistanceX)
@@ -65,10 +75,13 @@ public class ButtonRenderer {
 		} else {
 			FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
 			for(Button b : buttons) {
-				if(metrics.stringWidth(b.title) > sizeX-2*borderDistanceX)
-					for (int i = 0; i < array.length; i++) {
-						
+				b.display = b.title;
+				if(metrics.stringWidth(b.title) > sizeX-2*borderDistanceX) {
+					for (int i = 0; i < b.title.length(); i++) {
+						b.display = b.title+"...";
+						if(metrics.stringWidth(b.display)<=sizeX-2*borderDistanceX) break;
 					}
+				}
 			}
 		}
 	}
@@ -82,82 +95,5 @@ public class ButtonRenderer {
 		buttons.remove(b);
 		recalculateShape();
 	}
-
-	/**
-	 * Sets whether important outline attributes of the buttons shall be ignored and the template attributes shall be used instead.<br>
-	 * Combined with {@link #scaleTemplateToLargestText()} to create a uniform look of each button
-	 * 
-	 * @param whether to force overlay changes
-	 * @see #setDefaultOverlay(Button)
-	 */
-	public void forceDefaultLayout(boolean force) {
-		this.forceDefaulOverlay = force;
-	}
-	
-	/**
-	 * Sets the template's size properties so that it can contain the largest text (using the template font).<br>
-	 * Useful for creating uniform layouts.
-	 * @see #scaleButtonsToLargestText()
-	 */
-	public void scaleTemplateToLargestText() {
-		
-	}
-	
-	/**
-	 * Instead of modifying the template, this method mofifies each button individually
-	 * @see #scaleTemplateToLargestText()
-	 */
-	public void scaleButtonsToLargestText() {
-		
-	}
-	
-	public void draw(Graphics2D g) {
-		int posX = offsetX;
-		int posY = offsetY;
-
-		if (forceDefaulOverlay) {
-			for (Button button : buttons) {
-				
-			}
-		} else {
-			for (Button button : buttons) {
-				
-			}
-		}
-	}
-	
-	public static void alignButton(Button button) {
-		String text = button.title;
-		int sizeX = button.size.width;
-		int sizeY = button.size.height;
-
-		@SuppressWarnings("deprecation")
-		FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(button.font);
-
-		if ((button.clippingMode & Button.ALIGN_TO_BORDER_VERTICAL) != 0) {
-			for (int i = button.font.getSize() - 1; i > 0; i--) {
-				button.font = button.font.deriveFont((float) i);
-
-				if (metrics.stringWidth(text) <= button.size.width + 2 * button.borderDistanceX)
-					break;
-			}
-		}
-
-		if ((button.clippingMode & Button.ALIGN_TO_BORDER_HORIZONTAL) != 0) {
-			for (int i = button.font.getSize() - 1; i > 0; i--) {
-				button.font = button.font.deriveFont((float) i);
-				if (metrics.getHeight() <= button.size.height + 2 * button.borderDistanceY)
-					break;
-			}
-		}
-		
-		button.size.width = metrics.stringWidth(text) + 2 * button.borderDistanceX;
-		if ((button.clippingMode & Button.ALIGN_TO_TEXT_HORIZONTAL) != 0)
-			sizeX = metrics.stringWidth(text) + 2 * button.borderDistanceX;
-		if ((button.clippingMode & Button.ALIGN_TO_TEXT_VERTICAL) != 0)
-			button.size.height = metrics.getHeight() + 2 * button.borderDistanceY;
-	}
-	
-	
 
 }
