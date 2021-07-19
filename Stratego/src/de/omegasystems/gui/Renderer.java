@@ -65,7 +65,7 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 		height = getHeight();
 		currentGameStateRenderer.width = width - 16;
 		currentGameStateRenderer.height = height - 39;
-		if (isCustomRepaint) 
+		if (isCustomRepaint)
 			customRepaint(xg);
 		else {
 			BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -80,12 +80,12 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 			Graphics2D g2dComponent = (Graphics2D) xg;
 			g2dComponent.drawImage(bufferedImage, null, 0, 0);
 		}
-			
-			WindowState windowState = currentGameStateRenderer.getNextWindowState();
-			if (windowState != currentState)
-				updateGameStateRenderer(windowState);
+
+		WindowState windowState = currentGameStateRenderer.getNextWindowState();
+		if (windowState != currentState)
+			updateGameStateRenderer(windowState);
 	}
-	
+
 	void customRepaint(Graphics xg) {
 		BufferedImage bufferedImage = new BufferedImage(repaintWidth, repaintHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = bufferedImage.createGraphics();

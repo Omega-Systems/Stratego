@@ -8,6 +8,8 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
+
 public class ButtonRenderer {
 
 	/**
@@ -21,13 +23,23 @@ public class ButtonRenderer {
 	 * box's clips or the buttons are arranged to fit inside the container
 	 */
 	boolean dynamicSizeY;
-	int borderDistanceX, borderDistanceY;
+	
+	boolean visible;
+	
+	int borderDistanceX, borderDistanceY, textAscend;
 	Font font;
 
 	private List<Button> buttons = new ArrayList<Button>();
 	int offsetX, offsetY;
 
-	int buttonDistanceY, sizeX, sizeY;
+	int buttonDistanceY, sizeX, sizeY, buttonSizeY;
+	
+	Color backGroundColor = Color.LIGHT_GRAY, 
+			textColor = Color.BLACK,
+			highlightedBackgrondColor = Color.DARK_GRAY,
+			highlightedTextColor = Color.WHITE;
+	
+	JFrame frame;
 
 	public ButtonRenderer(int posX, int posY, int buttonDistanceY, int borderDistanceX, int borderDistanceY, int sizeX, int sizeY, boolean dynamicSizeY,
 			boolean alignButtonXToText) {
@@ -48,17 +60,26 @@ public class ButtonRenderer {
 		offsetY = posY;
 		sizeX = width;
 		sizeY = height;
-		font = new Font("Arial", Font.PLAIN, 11);
+		borderDistanceX = 6;
+		borderDistanceY = 4;
+		buttonDistanceY = 4;
+		alignBox = true;
+		dynamicSizeY = true;
+		visible = true;
+		font = new Font("Arial", Font.PLAIN, 20);
 	}
 
 	public void render(Graphics2D g) {
+		if(!visible) return;
+		g.setFont(font);
+		//g.drawRect(400, 400, 800, Toolkit.getDefaultToolkit().getFontMetrics(font).getHeight());
 		int posY = offsetY;
 		for (Button b : buttons) {
-			g.setColor(Color.DARK_GRAY);
-			g.fillRect(offsetX, posY, sizeX, sizeY);
-			g.setColor(Color.WHITE);
-			g.drawString(b.display, offsetX+borderDistanceX, posY+borderDistanceY);
-			posY+=sizeY+2*buttonDistanceY;
+			g.setColor(b.highlighted ? highlightedBackgrondColor : backGroundColor);
+			g.fillRect(offsetX, posY, sizeX, buttonSizeY);
+			g.setColor(b.highlighted ? highlightedTextColor : textColor);
+			g.drawString(b.display, offsetX+borderDistanceX, posY+borderDistanceY+textAscend);
+			posY+=buttonSizeY+buttonDistanceY;
 		}
 	}
 
@@ -79,21 +100,24 @@ public class ButtonRenderer {
 				else
 					break;
 			}
-		} else
-			sizeY = Toolkit.getDefaultToolkit().getFontMetrics(font).getHeight()+2*borderDistanceY;
-
+		} else {
+			buttonSizeY = Toolkit.getDefaultToolkit().getFontMetrics(font).getHeight()+2*borderDistanceY;
+			sizeY = (buttonSizeY+buttonDistanceY)*buttons.size();
+		}
+		
 		// Calculates the x size of the largest button (longest text) if dynamic X aka
 		// alignBox is activated, else it crops the button's text
+		
+		FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
 		if (alignBox) {
 			sizeX = 0;
-			FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
 			for (Button b : buttons) {
+				b.display = b.title;
 				if (metrics.stringWidth(b.title) > sizeX - 2 * borderDistanceX)
 					sizeX = metrics.stringWidth(b.title) + 2 * borderDistanceX;
-				b.display = b.title;
 			}
 		} else {
-			FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
+			
 			for (Button b : buttons) {
 				b.display = b.title;
 				if (metrics.stringWidth(b.title) > sizeX - 2 * borderDistanceX) {
@@ -105,8 +129,29 @@ public class ButtonRenderer {
 				}
 			}
 		}
+		textAscend = metrics.getAscent();
+	}
+	
+	public void mouseMove(int posX, int posY) {
+		Button button = getButtonFromPos(posX, posY);
+		
+		boolean repaint = false;
+		for (Button nButton : buttons) {
+			if(nButton.highlighted!=(button==nButton)) {
+				repaint = true;
+				nButton.highlighted = button==nButton;
+			}
+		}
+		
+		if(repaint)
+			frame.repaint();
 	}
 
+	public void mousePress(int posX, int posY) {
+		Button button = getButtonFromPos(posX, posY);
+		if(button!=null) button.pressed();
+	}
+	
 	public void addButton(Button b) {
 		buttons.add(b);
 		recalculateShape();
@@ -117,4 +162,18 @@ public class ButtonRenderer {
 		recalculateShape();
 	}
 
+	
+	Button getButtonFromPos(int absoluteX, int absoluteY) {
+		int posRelX = absoluteX - offsetX,
+				posRelY = absoluteY - offsetY;
+		
+		int buttonIndex = (int) ((posRelY / ((float)(sizeY))) * buttons.size());
+		Button button = null;
+		
+		if(buttonIndex >= 0 && buttonIndex < buttons.size()
+				&& posRelX >= 0 && posRelX <= sizeX
+				&& posRelY >= 0 && posRelY <= sizeY) 
+			button = buttons.get(buttonIndex);
+		return button;
+	}
 }
