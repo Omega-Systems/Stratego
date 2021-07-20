@@ -27,6 +27,9 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 
 	private int width, height;
 
+	public static final int BORDER_OFFSET_X = 16,
+			BORDER_OFFSET_Y = 39;
+	
 	private boolean isCustomRepaint;
 	int repaintX, repaintY, repaintWidth, repaintHeight;
 
@@ -63,8 +66,8 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 	public void paint(Graphics xg) {
 		width = getWidth();
 		height = getHeight();
-		currentGameStateRenderer.width = width - 16;
-		currentGameStateRenderer.height = height - 39;
+		currentGameStateRenderer.width = width - BORDER_OFFSET_X;
+		currentGameStateRenderer.height = height - BORDER_OFFSET_Y;
 		if (isCustomRepaint)
 			customRepaint(xg);
 		else {

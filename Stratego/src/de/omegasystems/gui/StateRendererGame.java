@@ -16,7 +16,7 @@ public class StateRendererGame extends GameStateRenderer {
 	int boardWidth, offsetX, offsetY;
 	final int lineWidth = 2;
 
-	private Color backgroundColor = Color.GREEN, 
+	private Color backgroundColor = new Color(0.0f, 0.5f, 0.0f), 
 			highlightedFieldColor = new Color(0.0f, 1.0f, 0.0f, 0.1f),
 			blackedFieldColor = new Color(0f, 0f, 0f, 0.5f), 
 			possibleMovesColor = new Color(0.0f, 1f, 1f, 0.2f),

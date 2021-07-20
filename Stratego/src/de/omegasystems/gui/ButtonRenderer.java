@@ -164,8 +164,8 @@ public class ButtonRenderer {
 
 	
 	Button getButtonFromPos(int absoluteX, int absoluteY) {
-		int posRelX = absoluteX - offsetX,
-				posRelY = absoluteY - offsetY;
+		int posRelX = absoluteX - offsetX, // Renderer.BORDER_OFFSET_X,
+				posRelY = absoluteY - offsetY - Renderer.BORDER_OFFSET_Y;
 		
 		int buttonIndex = (int) ((posRelY / ((float)(sizeY))) * buttons.size());
 		Button button = null;
