@@ -52,7 +52,7 @@ public class Piece {
 		return Arrays.asList(NAMES).indexOf(name);
 	}
 	
-	public static boolean isMoveable(int piece) {
-		return piece != Piece.NONE && piece != Piece.FLAG && piece != Piece.BOMB;
+	public static boolean isMoveable(int piece, Board board) {
+		return !board.isHidden() && piece != Piece.NONE && piece != Piece.FLAG && piece != Piece.BOMB;
 	}
 }

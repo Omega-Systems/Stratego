@@ -11,16 +11,16 @@ import de.omegasystems.Move;
 import de.omegasystems.Piece;
 import de.omegasystems.Square;
 
-public class StateRendererGame extends GameStateRenderer {
+public class StateRendererSetup extends GameStateRenderer {
 
 	int boardWidth, offsetX, offsetY;
 	final int lineWidth = 2;
 
-	private Color backgroundColor = new Color(0.0f, 0.5f, 0.0f), 
-			highlightedFieldColor = new Color(0.0f, 1.0f, 0.0f, 0.1f),
-			blackedFieldColor = new Color(0f, 0f, 0f, 0.5f), 
-			possibleMovesColor = new Color(0.0f, 1f, 1f, 0.2f),
-			selectedMoveColor = new Color(0f, 1f, 0f, 0.3f), 
+	private ButtonRenderer finishButton;
+	
+	private Color backgroundColor = new Color(0.0f, 0.5f, 0.0f),
+			highlightedFieldColor = new Color(0.0f, 1.0f, 0.0f, 0.1f), blackedFieldColor = new Color(0f, 0f, 0f, 0.5f),
+			possibleMovesColor = new Color(0.0f, 1f, 1f, 0.2f), selectedMoveColor = new Color(0f, 1f, 0f, 0.3f),
 			captureMoveColor = new Color(1f, 0f, 1f, 0.3f);
 
 	Point mousePos;
@@ -41,7 +41,7 @@ public class StateRendererGame extends GameStateRenderer {
 		g.translate(offsetX, offsetY);
 
 		ImageLoader.setDesiredTileSize(boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth);
-		
+
 		for (int x = 0; x < 10; x++) {
 			for (int y = 0; y < 10; y++) {
 				int posX = (int) ((((float) boardWidth - lineWidth) / 10) * x);
@@ -55,15 +55,8 @@ public class StateRendererGame extends GameStateRenderer {
 		if (selectedField >= 0) {
 			drawTileOverlay(g, highlightedFieldColor, selectedField);
 			int targetField = getFieldFromPos(mousePos.x, mousePos.y);
-			// drawTileOverlay(g, new Color(1f, 0f, 0f, 0.2f), targetField);
-			for (Integer move : board.generateMoves(selectedField)) {
-				if (move == targetField)
-					drawTileOverlay(g, selectedMoveColor, move);
-				else if (board.getPiece(de.omegasystems.Color.invert(board.curColor), move) != Piece.NONE)
-					drawTileOverlay(g, captureMoveColor, move);
-				else
-					drawTileOverlay(g, possibleMovesColor, move);
-			}
+			if (board.getColor(targetField) == board.getColor(selectedField))
+				drawTileOverlay(g, selectedMoveColor, targetField);
 		}
 
 		g.setColor(backgroundColor);
@@ -80,8 +73,9 @@ public class StateRendererGame extends GameStateRenderer {
 		if (mousePressed && selectedField >= 0)
 			g.drawImage(ImageLoader.getImageForPiece(board.getTileState(selectedField)),
 					mousePos.x - 8 - offsetX - boardWidth / 20, mousePos.y - 32 - offsetY - boardWidth / 20, null);
+		g.translate(-offsetX, -offsetY);
+		finishButton.render(g);
 	}
-	
 
 	@Override
 	void render(Graphics2D g, int clipX, int clipY, int width, int height) {
@@ -93,9 +87,9 @@ public class StateRendererGame extends GameStateRenderer {
 		g.translate(offsetX, offsetY);
 
 		ImageLoader.setDesiredTileSize(boardWidth / 10 - lineWidth, boardWidth / 10 - lineWidth);
-		
-		for (int x = (clipX-offsetX)/10; x < (clipX-offsetX)/10+Math.ceil(width/10f); x++) {
-			for (int y = (clipY-offsetY)/10; y < (clipY-offsetY)/10+Math.ceil(height/10f); x++) {
+
+		for (int x = (clipX - offsetX) / 10; x < (clipX - offsetX) / 10 + Math.ceil(width / 10f); x++) {
+			for (int y = (clipY - offsetY) / 10; y < (clipY - offsetY) / 10 + Math.ceil(height / 10f); x++) {
 				int posX = (int) ((((float) boardWidth - lineWidth) / 10) * x);
 				int posY = (int) ((((float) boardWidth - lineWidth) / 10) * (9 - y));
 				g.drawImage(ImageLoader.getImageForPiece(board.getTileState(Square.from(x, y))), posX, posY, null);
@@ -162,7 +156,7 @@ public class StateRendererGame extends GameStateRenderer {
 
 	@Override
 	public WindowState getNextWindowState() {
-		return board.getBoardState() == BoardState.INGAME ? WindowState.GAME : WindowState.RESULT;
+		return board.getBoardState() == BoardState.SETUP ? WindowState.SETUP : WindowState.GAME;
 	}
 
 	@Override
@@ -170,22 +164,23 @@ public class StateRendererGame extends GameStateRenderer {
 		mousePressed = true;
 		mousePos = e.getPoint();
 		int newField = getFieldFromPos(e.getX(), e.getY());
-		if (Piece.isMoveable(board.getPiece(board.curColor, newField), board)) {
+		if (board.getColor(newField) == board.curColor)  {
 			selectedField = newField;
-		} else if (selectedField >= 0 && board.generateMoves(selectedField).contains(newField)) {
-			board.move(Move.from(selectedField, newField));
+		} else if (selectedField >= 0 && board.getColor(selectedField) == board.getColor(newField)) {
+			board.swapPieces(Move.from(selectedField, newField));
 			selectedField = -1;
 		} else
 			selectedField = -1;
 		frame.repaint();
 	}
 
-	@Override
+	@Override	
 	public void mouseReleased(MouseEvent e) {
 		mousePressed = false;
 		int newField = getFieldFromPos(e.getX(), e.getY());
-		if (selectedField >= 0 && newField != selectedField && board.generateMoves(selectedField).contains(newField)) {
-			board.move(Move.from(selectedField, newField));
+		if (selectedField >= 0 && newField != selectedField
+				&& board.getColor(selectedField) == board.getColor(newField)) {
+			board.swapPieces(Move.from(selectedField, newField));
 			selectedField = -1;
 		}
 		frame.repaint();
@@ -193,22 +188,22 @@ public class StateRendererGame extends GameStateRenderer {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		int x = Math.min(mousePos.x, e.getX())-ImageLoader.getTileSizeX();
-		int y = Math.min(mousePos.y, e.getY())-ImageLoader.getTileSizeY();
-		int width = Math.abs(mousePos.x-e.getX())+ImageLoader.getTileSizeX()*2;
-		int height = Math.abs(mousePos.y-e.getY())+ImageLoader.getTileSizeY()*2;
+		int x = Math.min(mousePos.x, e.getX()) - ImageLoader.getTileSizeX();
+		int y = Math.min(mousePos.y, e.getY()) - ImageLoader.getTileSizeY();
+		int width = Math.abs(mousePos.x - e.getX()) + ImageLoader.getTileSizeX() * 2;
+		int height = Math.abs(mousePos.y - e.getY()) + ImageLoader.getTileSizeY() * 2;
 		mousePos = e.getPoint();
 		frame.repaint(x, y, width, height);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-
+		finishButton.mouseMove(e.getX(), e.getY());
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
+		finishButton.mousePress(e.getX(), e.getY());
 	}
 
 	@Override
@@ -233,6 +228,39 @@ public class StateRendererGame extends GameStateRenderer {
 
 	@Override
 	void init() {
-		board.setBoardState(BoardState.INGAME);
+		board.setBoardState(BoardState.SETUP);
+		finishButton = new ButtonRenderer(20, 20, 200, 200);
+		finishButton.frame = frame;
+		finishButton.addButton(new Button("Swap Side") {
+			
+			private boolean x = false;
+			private boolean y;
+			
+			@Override
+			void pressed() {
+				y = x;
+				board.curColor = de.omegasystems.Color.invert(board.curColor);
+				if(!x){
+					this.title = "Finish";
+					x = true;
+					finishButton.recalculateShape();
+					Renderer.INSTANCE.repaint();
+				}
+				board.setHidden(true);
+				finishButton.visible = false;
+				new Thread(() -> {
+					try {
+						Thread.sleep(2000);
+						board.setHidden(false);
+						finishButton.visible = true;
+						if(y) board.setBoardState(BoardState.INGAME);
+						frame.repaint();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}).start();
+			}
+		});
+		
 	}
 }

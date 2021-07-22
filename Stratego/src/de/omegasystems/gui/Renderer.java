@@ -12,14 +12,10 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
-import de.omegasystems.Board;
-import de.omegasystems.BoardSetup;
-
 public class Renderer extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
 
-	/**
-	 * One Square equals 256 pixels
-	 */
+	public static final Renderer INSTANCE = new Renderer("Stratego by Omega-Systems", 1000, 1000);;
+	
 	private static final long serialVersionUID = 3150993161852184366L;
 
 	GameStateRenderer currentGameStateRenderer;
@@ -34,12 +30,10 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 	int repaintX, repaintY, repaintWidth, repaintHeight;
 
 	public static void main(String[] args) {
-		Board board = BoardSetup.getStandardSetup();
-		Renderer renderer = new Renderer("Stratego by Omega-Systems", 1000, 1000, board);
-		renderer.repaint();
+		INSTANCE.repaint();
 	}
 
-	public Renderer(String title, int width, int height, Board board) {
+	public Renderer(String title, int width, int height) {
 		super(title);
 		this.width = width;
 		this.height = height;
@@ -120,6 +114,9 @@ public class Renderer extends JFrame implements KeyListener, MouseListener, Mous
 			break;
 		case RESULT:
 			currentGameStateRenderer = new StateRendererResults();
+			break;
+		case SETUP:
+			currentGameStateRenderer = new StateRendererSetup();
 			break;
 		default:
 		}

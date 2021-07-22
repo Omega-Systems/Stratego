@@ -106,7 +106,7 @@ public class StateRendererMenu extends GameStateRenderer {
 	
 	@Override
 	WindowState getNextWindowState() {
-		return clicked ? WindowState.GAME : WindowState.MAIN_MENU;
+		return clicked ? WindowState.SETUP : WindowState.MAIN_MENU;
 	}
 
 	@Override
